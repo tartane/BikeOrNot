@@ -8,7 +8,7 @@ public class Datum__ {
 
     @SerializedName("time")
     @Expose
-    private Integer time;
+    private Double time;
     @SerializedName("summary")
     @Expose
     private String summary;
@@ -17,10 +17,10 @@ public class Datum__ {
     private String icon;
     @SerializedName("sunriseTime")
     @Expose
-    private Integer sunriseTime;
+    private Double sunriseTime;
     @SerializedName("sunsetTime")
     @Expose
-    private Integer sunsetTime;
+    private Double sunsetTime;
     @SerializedName("moonPhase")
     @Expose
     private Double moonPhase;
@@ -38,25 +38,25 @@ public class Datum__ {
     private Double temperatureMin;
     @SerializedName("temperatureMinTime")
     @Expose
-    private Integer temperatureMinTime;
+    private Double temperatureMinTime;
     @SerializedName("temperatureMax")
     @Expose
     private Double temperatureMax;
     @SerializedName("temperatureMaxTime")
     @Expose
-    private Integer temperatureMaxTime;
+    private Double temperatureMaxTime;
     @SerializedName("apparentTemperatureMin")
     @Expose
     private Double apparentTemperatureMin;
     @SerializedName("apparentTemperatureMinTime")
     @Expose
-    private Integer apparentTemperatureMinTime;
+    private Double apparentTemperatureMinTime;
     @SerializedName("apparentTemperatureMax")
     @Expose
     private Double apparentTemperatureMax;
     @SerializedName("apparentTemperatureMaxTime")
     @Expose
-    private Integer apparentTemperatureMaxTime;
+    private Double apparentTemperatureMaxTime;
     @SerializedName("dewPoint")
     @Expose
     private Double dewPoint;
@@ -68,7 +68,7 @@ public class Datum__ {
     private Double windSpeed;
     @SerializedName("windBearing")
     @Expose
-    private Integer windBearing;
+    private Double windBearing;
     @SerializedName("visibility")
     @Expose
     private Double visibility;
@@ -83,7 +83,7 @@ public class Datum__ {
     private Double ozone;
     @SerializedName("precipIntensityMaxTime")
     @Expose
-    private Integer precipIntensityMaxTime;
+    private Double precipIntensityMaxTime;
     @SerializedName("precipType")
     @Expose
     private String precipType;
@@ -93,7 +93,7 @@ public class Datum__ {
      * @return
      *     The time
      */
-    public Integer getTime() {
+    public Double getTime() {
         return time;
     }
 
@@ -102,7 +102,7 @@ public class Datum__ {
      * @param time
      *     The time
      */
-    public void setTime(Integer time) {
+    public void setTime(Double time) {
         this.time = time;
     }
 
@@ -147,7 +147,7 @@ public class Datum__ {
      * @return
      *     The sunriseTime
      */
-    public Integer getSunriseTime() {
+    public Double getSunriseTime() {
         return sunriseTime;
     }
 
@@ -156,7 +156,7 @@ public class Datum__ {
      * @param sunriseTime
      *     The sunriseTime
      */
-    public void setSunriseTime(Integer sunriseTime) {
+    public void setSunriseTime(Double sunriseTime) {
         this.sunriseTime = sunriseTime;
     }
 
@@ -165,7 +165,7 @@ public class Datum__ {
      * @return
      *     The sunsetTime
      */
-    public Integer getSunsetTime() {
+    public Double getSunsetTime() {
         return sunsetTime;
     }
 
@@ -174,7 +174,7 @@ public class Datum__ {
      * @param sunsetTime
      *     The sunsetTime
      */
-    public void setSunsetTime(Integer sunsetTime) {
+    public void setSunsetTime(Double sunsetTime) {
         this.sunsetTime = sunsetTime;
     }
 
@@ -273,7 +273,7 @@ public class Datum__ {
      * @return
      *     The temperatureMinTime
      */
-    public Integer getTemperatureMinTime() {
+    public Double getTemperatureMinTime() {
         return temperatureMinTime;
     }
 
@@ -282,7 +282,7 @@ public class Datum__ {
      * @param temperatureMinTime
      *     The temperatureMinTime
      */
-    public void setTemperatureMinTime(Integer temperatureMinTime) {
+    public void setTemperatureMinTime(Double temperatureMinTime) {
         this.temperatureMinTime = temperatureMinTime;
     }
 
@@ -309,7 +309,7 @@ public class Datum__ {
      * @return
      *     The temperatureMaxTime
      */
-    public Integer getTemperatureMaxTime() {
+    public Double getTemperatureMaxTime() {
         return temperatureMaxTime;
     }
 
@@ -318,7 +318,7 @@ public class Datum__ {
      * @param temperatureMaxTime
      *     The temperatureMaxTime
      */
-    public void setTemperatureMaxTime(Integer temperatureMaxTime) {
+    public void setTemperatureMaxTime(Double temperatureMaxTime) {
         this.temperatureMaxTime = temperatureMaxTime;
     }
 
@@ -345,7 +345,7 @@ public class Datum__ {
      * @return
      *     The apparentTemperatureMinTime
      */
-    public Integer getApparentTemperatureMinTime() {
+    public Double getApparentTemperatureMinTime() {
         return apparentTemperatureMinTime;
     }
 
@@ -354,7 +354,7 @@ public class Datum__ {
      * @param apparentTemperatureMinTime
      *     The apparentTemperatureMinTime
      */
-    public void setApparentTemperatureMinTime(Integer apparentTemperatureMinTime) {
+    public void setApparentTemperatureMinTime(Double apparentTemperatureMinTime) {
         this.apparentTemperatureMinTime = apparentTemperatureMinTime;
     }
 
@@ -381,7 +381,7 @@ public class Datum__ {
      * @return
      *     The apparentTemperatureMaxTime
      */
-    public Integer getApparentTemperatureMaxTime() {
+    public Double getApparentTemperatureMaxTime() {
         return apparentTemperatureMaxTime;
     }
 
@@ -390,7 +390,7 @@ public class Datum__ {
      * @param apparentTemperatureMaxTime
      *     The apparentTemperatureMaxTime
      */
-    public void setApparentTemperatureMaxTime(Integer apparentTemperatureMaxTime) {
+    public void setApparentTemperatureMaxTime(Double apparentTemperatureMaxTime) {
         this.apparentTemperatureMaxTime = apparentTemperatureMaxTime;
     }
 
@@ -453,7 +453,7 @@ public class Datum__ {
      * @return
      *     The windBearing
      */
-    public Integer getWindBearing() {
+    public Double getWindBearing() {
         return windBearing;
     }
 
@@ -462,7 +462,7 @@ public class Datum__ {
      * @param windBearing
      *     The windBearing
      */
-    public void setWindBearing(Integer windBearing) {
+    public void setWindBearing(Double windBearing) {
         this.windBearing = windBearing;
     }
 
@@ -543,7 +543,7 @@ public class Datum__ {
      * @return
      *     The precipIntensityMaxTime
      */
-    public Integer getPrecipIntensityMaxTime() {
+    public Double getPrecipIntensityMaxTime() {
         return precipIntensityMaxTime;
     }
 
@@ -552,7 +552,7 @@ public class Datum__ {
      * @param precipIntensityMaxTime
      *     The precipIntensityMaxTime
      */
-    public void setPrecipIntensityMaxTime(Integer precipIntensityMaxTime) {
+    public void setPrecipIntensityMaxTime(Double precipIntensityMaxTime) {
         this.precipIntensityMaxTime = precipIntensityMaxTime;
     }
 

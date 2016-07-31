@@ -8,20 +8,20 @@ public class Datum {
 
     @SerializedName("time")
     @Expose
-    private Integer time;
+    private Double time;
     @SerializedName("precipIntensity")
     @Expose
-    private Integer precipIntensity;
+    private Double precipIntensity;
     @SerializedName("precipProbability")
     @Expose
-    private Integer precipProbability;
+    private Double precipProbability;
 
     /**
      * 
      * @return
      *     The time
      */
-    public Integer getTime() {
+    public Double getTime() {
         return time;
     }
 
@@ -30,7 +30,7 @@ public class Datum {
      * @param time
      *     The time
      */
-    public void setTime(Integer time) {
+    public void setTime(Double time) {
         this.time = time;
     }
 
@@ -39,7 +39,7 @@ public class Datum {
      * @return
      *     The precipIntensity
      */
-    public Integer getPrecipIntensity() {
+    public Double getPrecipIntensity() {
         return precipIntensity;
     }
 
@@ -48,7 +48,7 @@ public class Datum {
      * @param precipIntensity
      *     The precipIntensity
      */
-    public void setPrecipIntensity(Integer precipIntensity) {
+    public void setPrecipIntensity(Double precipIntensity) {
         this.precipIntensity = precipIntensity;
     }
 
@@ -57,7 +57,7 @@ public class Datum {
      * @return
      *     The precipProbability
      */
-    public Integer getPrecipProbability() {
+    public Double getPrecipProbability() {
         return precipProbability;
     }
 
@@ -66,7 +66,7 @@ public class Datum {
      * @param precipProbability
      *     The precipProbability
      */
-    public void setPrecipProbability(Integer precipProbability) {
+    public void setPrecipProbability(Double precipProbability) {
         this.precipProbability = precipProbability;
     }
 

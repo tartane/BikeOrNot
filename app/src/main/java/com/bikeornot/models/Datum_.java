@@ -8,7 +8,7 @@ public class Datum_ {
 
     @SerializedName("time")
     @Expose
-    private Integer time;
+    private Double time;
     @SerializedName("summary")
     @Expose
     private String summary;
@@ -17,10 +17,10 @@ public class Datum_ {
     private String icon;
     @SerializedName("precipIntensity")
     @Expose
-    private Integer precipIntensity;
+    private Double precipIntensity;
     @SerializedName("precipProbability")
     @Expose
-    private Integer precipProbability;
+    private Double precipProbability;
     @SerializedName("temperature")
     @Expose
     private Double temperature;
@@ -38,10 +38,10 @@ public class Datum_ {
     private Double windSpeed;
     @SerializedName("windBearing")
     @Expose
-    private Integer windBearing;
+    private Double windBearing;
     @SerializedName("visibility")
     @Expose
-    private Integer visibility;
+    private Double visibility;
     @SerializedName("cloudCover")
     @Expose
     private Double cloudCover;
@@ -57,7 +57,7 @@ public class Datum_ {
      * @return
      *     The time
      */
-    public Integer getTime() {
+    public Double getTime() {
         return time;
     }
 
@@ -66,7 +66,7 @@ public class Datum_ {
      * @param time
      *     The time
      */
-    public void setTime(Integer time) {
+    public void setTime(Double time) {
         this.time = time;
     }
 
@@ -111,7 +111,7 @@ public class Datum_ {
      * @return
      *     The precipIntensity
      */
-    public Integer getPrecipIntensity() {
+    public Double getPrecipIntensity() {
         return precipIntensity;
     }
 
@@ -120,7 +120,7 @@ public class Datum_ {
      * @param precipIntensity
      *     The precipIntensity
      */
-    public void setPrecipIntensity(Integer precipIntensity) {
+    public void setPrecipIntensity(Double precipIntensity) {
         this.precipIntensity = precipIntensity;
     }
 
@@ -129,7 +129,7 @@ public class Datum_ {
      * @return
      *     The precipProbability
      */
-    public Integer getPrecipProbability() {
+    public Double getPrecipProbability() {
         return precipProbability;
     }
 
@@ -138,7 +138,7 @@ public class Datum_ {
      * @param precipProbability
      *     The precipProbability
      */
-    public void setPrecipProbability(Integer precipProbability) {
+    public void setPrecipProbability(Double precipProbability) {
         this.precipProbability = precipProbability;
     }
 
@@ -237,7 +237,7 @@ public class Datum_ {
      * @return
      *     The windBearing
      */
-    public Integer getWindBearing() {
+    public Double getWindBearing() {
         return windBearing;
     }
 
@@ -246,7 +246,7 @@ public class Datum_ {
      * @param windBearing
      *     The windBearing
      */
-    public void setWindBearing(Integer windBearing) {
+    public void setWindBearing(Double windBearing) {
         this.windBearing = windBearing;
     }
 
@@ -255,7 +255,7 @@ public class Datum_ {
      * @return
      *     The visibility
      */
-    public Integer getVisibility() {
+    public Double getVisibility() {
         return visibility;
     }
 
@@ -264,7 +264,7 @@ public class Datum_ {
      * @param visibility
      *     The visibility
      */
-    public void setVisibility(Integer visibility) {
+    public void setVisibility(Double visibility) {
         this.visibility = visibility;
     }
 

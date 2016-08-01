@@ -20,16 +20,16 @@ public class Forecast {
     private Integer offset;
     @SerializedName("currently")
     @Expose
-    private Currently currently;
+    private DataPoint currently;
     @SerializedName("minutely")
     @Expose
-    private Minutely minutely;
+    private DataBlock minutely;
     @SerializedName("hourly")
     @Expose
-    private Hourly hourly;
+    private DataBlock hourly;
     @SerializedName("daily")
     @Expose
-    private Daily daily;
+    private DataBlock daily;
     @SerializedName("flags")
     @Expose
     private Flags flags;
@@ -111,7 +111,7 @@ public class Forecast {
      * @return
      *     The currently
      */
-    public Currently getCurrently() {
+    public DataPoint getCurrently() {
         return currently;
     }
 
@@ -120,7 +120,7 @@ public class Forecast {
      * @param currently
      *     The currently
      */
-    public void setCurrently(Currently currently) {
+    public void setCurrently(DataPoint currently) {
         this.currently = currently;
     }
 
@@ -129,7 +129,7 @@ public class Forecast {
      * @return
      *     The minutely
      */
-    public Minutely getMinutely() {
+    public DataBlock getMinutely() {
         return minutely;
     }
 
@@ -138,7 +138,7 @@ public class Forecast {
      * @param minutely
      *     The minutely
      */
-    public void setMinutely(Minutely minutely) {
+    public void setMinutely(DataBlock minutely) {
         this.minutely = minutely;
     }
 
@@ -147,7 +147,7 @@ public class Forecast {
      * @return
      *     The hourly
      */
-    public Hourly getHourly() {
+    public DataBlock getHourly() {
         return hourly;
     }
 
@@ -156,7 +156,7 @@ public class Forecast {
      * @param hourly
      *     The hourly
      */
-    public void setHourly(Hourly hourly) {
+    public void setHourly(DataBlock hourly) {
         this.hourly = hourly;
     }
 
@@ -165,7 +165,7 @@ public class Forecast {
      * @return
      *     The daily
      */
-    public Daily getDaily() {
+    public DataBlock getDaily() {
         return daily;
     }
 
@@ -174,7 +174,7 @@ public class Forecast {
      * @param daily
      *     The daily
      */
-    public void setDaily(Daily daily) {
+    public void setDaily(DataBlock daily) {
         this.daily = daily;
     }
 

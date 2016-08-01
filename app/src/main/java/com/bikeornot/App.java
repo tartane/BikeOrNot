@@ -1,6 +1,7 @@
 package com.bikeornot;
 
 import android.app.Application;
+import android.content.Context;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -11,6 +12,10 @@ public class App extends Application {
 
     private static OkHttpClient sHttpClient;
     private static Gson mGson;
+    private static Context mContext;
+
+
+
 
     public static OkHttpClient getHttpClient() {
         if (sHttpClient == null) {

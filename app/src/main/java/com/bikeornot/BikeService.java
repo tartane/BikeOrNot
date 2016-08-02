@@ -4,30 +4,28 @@ import android.app.IntentService;
 import android.app.NotificationManager;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
+import android.zetterstrom.com.forecast.ForecastClient;
+import android.zetterstrom.com.forecast.ForecastConfiguration;
+import android.zetterstrom.com.forecast.models.DataPoint;
+import android.zetterstrom.com.forecast.models.Forecast;
 
-import com.bikeornot.models.DataPoint;
-import com.bikeornot.models.Forecast;
 import com.bikeornot.preferences.Prefs;
 import com.bikeornot.utilities.PrefUtils;
-import com.google.gson.Gson;
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class BikeService extends IntentService {
 
-    enum BikeOrNot {
+    enum EBikeOrNot {
         Yes,
         No,
-        Maybe
+        Maybe,
+        Unknown
     }
-
-    private final String forecastUrl = "https://api.forecast.io/forecast/";
 
     public BikeService() {
         super("BikeService");
@@ -41,32 +39,29 @@ public class BikeService extends IntentService {
     }
 
     public void FetchWeatherApi() {
-        OkHttpClient client = App.getHttpClient();
+        ForecastConfiguration configuration =
+                new ForecastConfiguration.Builder(getString(R.string.api_key)).build();
 
-        final Request request = new Request.Builder()
-                .url(forecastUrl + getString(R.string.api_key) + "/45.4765450,-75.7012720")
-                .build();
+        ForecastClient.create(configuration);
 
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Request request, IOException e) {
+        double goingLatitude = PrefUtils.get(this, Prefs.GOING_LATITUDE, 45.4765450);
+        double goingLongitude = PrefUtils.get(this, Prefs.GOING_LONGITUDE, -75.7012720);
 
-            }
-
-            @Override
-            public void onResponse(Response response) throws IOException {
-                if(response.isSuccessful()) {
-                    try {
-                        Gson gson = App.getGson();
-                        String json = response.body().string();
-                        Forecast forecast = gson.fromJson(json, Forecast.class);
-                        BikeOrNot(forecast);
-                    } catch(Exception e) {
-                        String exception = e.getMessage();
+        ForecastClient.getInstance()
+                .getForecast(goingLatitude, goingLongitude, new Callback<Forecast>() {
+                    @Override
+                    public void onResponse(Call<Forecast> forecastCall, Response<Forecast> response) {
+                        if (response.isSuccessful()) {
+                            Forecast forecast = response.body();
+                            BikeOrNot(forecast);
+                        }
                     }
-                }
-            }
-        });
+
+                    @Override
+                    public void onFailure(Call<Forecast> forecastCall, Throwable t) {
+                        ShowNotification(EBikeOrNot.Unknown);
+                    }
+                });
     }
 
     public void BikeOrNot(Forecast forecast) {
@@ -112,8 +107,8 @@ public class BikeService extends IntentService {
 
         Calendar forecastCal = Calendar.getInstance();
         Calendar localCal = Calendar.getInstance();
-        for(DataPoint dataPoint: forecast.getHourly().getData()) {
-            forecastCal.setTimeInMillis(dataPoint.getTime());
+        for(DataPoint dataPoint: forecast.getHourly().getDataPoints()) {
+            forecastCal.setTime(dataPoint.getTime());
 
             int forecastDay = forecastCal.get(Calendar.DAY_OF_MONTH);
             int forecastHour = forecastCal.get(Calendar.HOUR_OF_DAY);
@@ -127,31 +122,60 @@ public class BikeService extends IntentService {
             }
         }
 
-        //TODO evaluate the forecast data.
-        ShowNotification(BikeOrNot.Yes);
+        EBikeOrNot currentStatus = EBikeOrNot.Unknown;
+
+        //TODO review the calculate. maybe an average of all hours precipitation? The values should come from the prefs.
+        for(DataPoint datapoint: dataPointToAnalyse) {
+            if(datapoint.getPrecipProbability() >= 0.50) {
+                currentStatus = EBikeOrNot.No;
+                break;
+            } else if(datapoint.getPrecipProbability() >= 0.30 && datapoint.getPrecipProbability() < 0.50) {
+                currentStatus = EBikeOrNot.Maybe;
+                break;
+            } else {
+                currentStatus = EBikeOrNot.Yes;
+            }
+        }
+
+        ShowNotification(currentStatus);
     }
 
-    public void ShowNotification(BikeOrNot bikeOrNot) {
+    public void ShowNotification(EBikeOrNot bikeOrNot) {
 
         int bicycleDrawable = -1;
+        String title;
+        String text;
 
         switch(bikeOrNot) {
+            /*TODO It would be nice to add lots of random texts and titles.*/
             case Yes:
                 bicycleDrawable = R.drawable.ic_bicycle_green;
+                title = "Bike today!";
+                text = "Weather looks nice today. Get on your bike!";
                 break;
             case Maybe:
                 bicycleDrawable = R.drawable.ic_bicycle_yellow;
+                title = "Feeling lucky today?";
+                text = "then take the chance and get on your bike!";
                 break;
             case No:
                 bicycleDrawable = R.drawable.ic_bicycle_red;
+                title = "Eww.";
+                text = "Biking might not be the best idea today.";
+                break;
+            case Unknown:
+            default:
+                //black or white bike
+                title = "Unknown weather.";
+                text = "Unfortunately, we were unable to get the forecast of today. Your call.";
                 break;
         }
 
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(bicycleDrawable)
-                        .setContentTitle("Bike today!")
-                        .setContentText("Weather looks nice today. Get on your bike!");
+                        .setContentTitle(title)
+                        .setContentText(text);
 
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(NOTIFICATION_SERVICE);

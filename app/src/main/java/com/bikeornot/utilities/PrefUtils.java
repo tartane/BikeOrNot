@@ -109,6 +109,29 @@ public class PrefUtils {
     }
 
     /**
+     * Save a double to the central {@link ObscuredSharedPreferences}
+     *
+     * @param context Context
+     * @param key     Key of the preference
+     * @param value   Value of the preference
+     */
+    public static void save(Context context, String key, double value) {
+        getPrefs(context).edit().putLong(key, Double.doubleToRawLongBits(value));
+    }
+
+    /**
+     * Get a saved double from the central {@link ObscuredSharedPreferences}
+     *
+     * @param context      Context
+     * @param key          Key of the preference
+     * @param defaultValue Default
+     * @return The saved integer
+     */
+    public static double get(Context context, String key, double defaultValue) {
+        return Double.longBitsToDouble(getPrefs(context).getLong(key, Double.doubleToLongBits(defaultValue)));
+    }
+
+    /**
      * Check if the central {@link ObscuredSharedPreferences} contains a preference that uses that key
      *
      * @param context Context

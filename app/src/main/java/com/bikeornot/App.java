@@ -14,9 +14,6 @@ public class App extends Application {
     private static Gson mGson;
     private static Context mContext;
 
-
-
-
     public static OkHttpClient getHttpClient() {
         if (sHttpClient == null) {
             sHttpClient = new OkHttpClient();

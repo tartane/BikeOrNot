@@ -3,7 +3,10 @@ package com.bikeornot;
 import android.app.IntentService;
 import android.app.NotificationManager;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.ContextCompat;
 import android.zetterstrom.com.forecast.ForecastClient;
 import android.zetterstrom.com.forecast.ForecastConfiguration;
 import android.zetterstrom.com.forecast.models.DataPoint;
@@ -44,6 +47,7 @@ public class BikeService extends IntentService {
 
         ForecastClient.create(configuration);
 
+        //If the user decide a different location for the going/return, i'll need to do 2 request
         double goingLatitude = PrefUtils.get(this, Prefs.GOING_LATITUDE, 45.4765450);
         double goingLongitude = PrefUtils.get(this, Prefs.GOING_LONGITUDE, -75.7012720);
 
@@ -89,6 +93,7 @@ public class BikeService extends IntentService {
             }
         }
 
+        hoursToCheck.add(returnStartTimeHour);
         int endMinuteIncludingRide = returnStartTimeMinute + rideLengthMinute;
         if(endMinuteIncludingRide >= 60) {
             int hours = endMinuteIncludingRide / 60;
@@ -138,7 +143,12 @@ public class BikeService extends IntentService {
         }
 
         ShowNotification(currentStatus);
+
+        //Schedule the next alarm.
+        BootReceiver.scheduleAlarms(this, true);
     }
+
+
 
     public void ShowNotification(EBikeOrNot bikeOrNot) {
 
@@ -165,14 +175,19 @@ public class BikeService extends IntentService {
                 break;
             case Unknown:
             default:
-                //black or white bike
+                bicycleDrawable = R.drawable.ic_bicycle_white;
                 title = "Unknown weather.";
-                text = "Unfortunately, we were unable to get the forecast of today. Your call.";
+                text = "Unable to get the forecast of today... Your call.";
                 break;
         }
 
+
+
+        int color = ContextCompat.getColor(this, R.color.colorPrimary);
+        //Bitmap bm = BitmapFactory.decodeResource(getResources(), bicycleDrawable);
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(this)
+                        .setColor(color)
                         .setSmallIcon(bicycleDrawable)
                         .setContentTitle(title)
                         .setContentText(text);

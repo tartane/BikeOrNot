@@ -14,7 +14,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-        //TODO this should be called after the setup.
-        BootReceiver.scheduleAlarms(this);
+        //TODO this should be called after the setup. the next day should be decide when the user setup the app
+        BootReceiver.scheduleAlarms(this, false);
     }
 }

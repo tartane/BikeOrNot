@@ -5,6 +5,8 @@ import android.os.Bundle;
 
 import com.bikeornot.BootReceiver;
 import com.bikeornot.R;
+import com.bikeornot.preferences.Prefs;
+import com.bikeornot.utilities.PrefUtils;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -13,8 +15,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        int notificationHour = PrefUtils.get(this, Prefs.NOTIFICATION_HOUR, 8);
+        int notificationMinute = PrefUtils.get(this, Prefs.NOTIFICATION_MINUTE, 00);
 
         //TODO this should be called after the setup. the next day should be decide when the user setup the app
-        BootReceiver.scheduleAlarms(this, false);
+        BootReceiver.scheduleAlarms(this,  BootReceiver.shouldTriggerNextDay(notificationHour, notificationMinute));
     }
 }

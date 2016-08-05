@@ -29,14 +29,14 @@ public class BootReceiver extends BroadcastReceiver {
     }
 
     //static for dev purpose only
-    public static boolean shouldTriggerNextDay(int goingStartTimeHour, int goingStartTimeMinute) {
+    public static boolean shouldTriggerNextDay(int notificationHour, int notificationMinute) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
 
-        int currentHour = calendar.get(Calendar.HOUR_OF_DAY);
-        int currentMinute = calendar.get(Calendar.MINUTE);
+        calendar.set(Calendar.HOUR_OF_DAY, notificationHour);
+        calendar.set(Calendar.MINUTE, notificationMinute);
 
-        if(currentHour > goingStartTimeHour || (currentHour == goingStartTimeHour && currentMinute > goingStartTimeMinute)) {
+        if(Calendar.getInstance().after(calendar)) {
             return true;
         } else {
             return false;
@@ -60,7 +60,7 @@ public class BootReceiver extends BroadcastReceiver {
 
         //Repeating alarm or boot
         if(nextDay) {
-            calendar.add(Calendar.DAY_OF_YEAR, 1);
+            calendar.add(Calendar.DATE, 1);
         }
 
         if (android.os.Build.VERSION.SDK_INT >= 19) {

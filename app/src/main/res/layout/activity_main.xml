@@ -4,20 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_content"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
+    android:layout_height="match_parent">
         <android.support.design.widget.AppBarLayout
             android:id="@+id/appbar"
             android:layout_width="match_parent"
             android:layout_height="300dp"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            android:fitsSystemWindows="true">
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
                 <android.support.design.widget.CollapsingToolbarLayout
                     android:id="@+id/collapsing_toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:fitsSystemWindows="true"
-                    app:contentScrim="#245169"
+                    app:contentScrim="#00245169"
                     app:expandedTitleMarginEnd="64dp"
                     app:expandedTitleMarginStart="48dp"
                     app:layout_scrollFlags="scroll|exitUntilCollapsed">
@@ -62,8 +59,6 @@
                             android:id="@+id/toolbar"
                             android:layout_width="match_parent"
                             android:layout_height="50dp"
-                            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-                            app:popupTheme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
                             app:layout_collapseMode="pin"/>
 
 

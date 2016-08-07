@@ -51,7 +51,7 @@ public class BootReceiver extends BroadcastReceiver {
         PendingIntent servicePendingIntent = PendingIntent.getService(context, 0, serviceIntent, 0);
 
         int notificationHour = PrefUtils.get(context, Prefs.NOTIFICATION_HOUR, 8);
-        int notificationMinute = PrefUtils.get(context, Prefs.NOTIFICATION_MINUTE, 00);
+        int notificationMinute = PrefUtils.get(context, Prefs.NOTIFICATION_MINUTE, 0);
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
@@ -63,10 +63,11 @@ public class BootReceiver extends BroadcastReceiver {
             calendar.add(Calendar.DATE, 1);
         }
 
+        long alarmTime = calendar.getTimeInMillis();
         if (android.os.Build.VERSION.SDK_INT >= 19) {
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), servicePendingIntent);
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, alarmTime, servicePendingIntent);
         } else {
-            alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), servicePendingIntent);
+            alarmManager.set(AlarmManager.RTC_WAKEUP, alarmTime, servicePendingIntent);
         }
 
     }

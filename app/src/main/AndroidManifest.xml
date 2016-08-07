@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.bikeornot">
+    package="com.alert.bikeornot">
 
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
-        android:name="com.bikeornot.App"
+        android:name="com.alert.bikeornot.App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".activities.MainActivity">
+        <activity android:name="com.alert.bikeornot.activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -21,13 +21,13 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name="com.bikeornot.BootReceiver">
+        <receiver android:name="com.alert.bikeornot.BootReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
         </receiver>
 
-        <service android:name="com.bikeornot.BikeService">
+        <service android:name="com.alert.bikeornot.BikeService">
         </service>
 
     </application>

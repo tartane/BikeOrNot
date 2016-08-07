@@ -1,8 +1,8 @@
-package com.bikeornot.preferences;
+package com.alert.bikeornot.preferences;
 
 import android.content.Context;
 
-import com.bikeornot.utilities.PrefUtils;
+import com.alert.bikeornot.utilities.PrefUtils;
 
 
 public class PrefItem {

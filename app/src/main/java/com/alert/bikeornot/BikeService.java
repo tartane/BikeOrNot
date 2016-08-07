@@ -1,10 +1,8 @@
-package com.bikeornot;
+package com.alert.bikeornot;
 
 import android.app.IntentService;
 import android.app.NotificationManager;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.zetterstrom.com.forecast.ForecastClient;
@@ -12,8 +10,8 @@ import android.zetterstrom.com.forecast.ForecastConfiguration;
 import android.zetterstrom.com.forecast.models.DataPoint;
 import android.zetterstrom.com.forecast.models.Forecast;
 
-import com.bikeornot.preferences.Prefs;
-import com.bikeornot.utilities.PrefUtils;
+import com.alert.bikeornot.preferences.Prefs;
+import com.alert.bikeornot.utilities.PrefUtils;
 import java.util.ArrayList;
 import java.util.Calendar;
 

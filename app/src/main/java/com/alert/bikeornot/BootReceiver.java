@@ -1,13 +1,14 @@
-package com.bikeornot;
+package com.alert.bikeornot;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 
-import com.bikeornot.preferences.Prefs;
-import com.bikeornot.utilities.PrefUtils;
+import com.alert.bikeornot.preferences.Prefs;
+import com.alert.bikeornot.utilities.PrefUtils;
 
 import java.util.Calendar;
 
@@ -17,8 +18,8 @@ public class BootReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         //Make sure the user has setup the app before showing notification
         if(PrefUtils.get(context, Prefs.IS_SETUP, false)){
-            int notificationHour = PrefUtils.get(context, Prefs.NOTIFICATION_HOUR, 8);
-            int notificationMinute = PrefUtils.get(context, Prefs.NOTIFICATION_MINUTE, 00);
+            int notificationHour = PrefUtils.get(context, Prefs.NOTIFICATION_HOUR, 10);
+            int notificationMinute = PrefUtils.get(context, Prefs.NOTIFICATION_MINUTE, 17);
 
             if(shouldTriggerNextDay(notificationHour, notificationMinute)) {
                 scheduleAlarms(context, true);
@@ -50,8 +51,8 @@ public class BootReceiver extends BroadcastReceiver {
         Intent serviceIntent = new Intent(context, BikeService.class);
         PendingIntent servicePendingIntent = PendingIntent.getService(context, 0, serviceIntent, 0);
 
-        int notificationHour = PrefUtils.get(context, Prefs.NOTIFICATION_HOUR, 8);
-        int notificationMinute = PrefUtils.get(context, Prefs.NOTIFICATION_MINUTE, 0);
+        int notificationHour = PrefUtils.get(context, Prefs.NOTIFICATION_HOUR, 10);
+        int notificationMinute = PrefUtils.get(context, Prefs.NOTIFICATION_MINUTE, 17);
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
@@ -64,10 +65,16 @@ public class BootReceiver extends BroadcastReceiver {
         }
 
         long alarmTime = calendar.getTimeInMillis();
-        if (android.os.Build.VERSION.SDK_INT >= 19) {
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, alarmTime, servicePendingIntent);
-        } else {
+
+        final int SDK_INT = Build.VERSION.SDK_INT;
+        if (SDK_INT < Build.VERSION_CODES.KITKAT) {
             alarmManager.set(AlarmManager.RTC_WAKEUP, alarmTime, servicePendingIntent);
+        }
+        else if (Build.VERSION_CODES.KITKAT <= SDK_INT  && SDK_INT < Build.VERSION_CODES.M) {
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, alarmTime, servicePendingIntent);
+        }
+        else if (SDK_INT >= Build.VERSION_CODES.M) {
+            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, alarmTime, servicePendingIntent);
         }
 
     }

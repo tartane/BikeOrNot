@@ -1,4 +1,4 @@
-package com.bikeornot;
+package com.alert.bikeornot;
 
 import android.app.Application;
 import android.content.Context;

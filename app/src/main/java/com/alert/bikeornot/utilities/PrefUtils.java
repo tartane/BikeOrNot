@@ -1,9 +1,9 @@
-package com.bikeornot.utilities;
+package com.alert.bikeornot.utilities;
 
 import android.content.Context;
 
-import com.bikeornot.Constants;
-import com.bikeornot.preferences.ObscuredSharedPreferences;
+import com.alert.bikeornot.Constants;
+import com.alert.bikeornot.preferences.ObscuredSharedPreferences;
 
 public class PrefUtils {
 

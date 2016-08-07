@@ -1,4 +1,4 @@
-package com.bikeornot.preferences;
+package com.alert.bikeornot.preferences;
 
 public class Prefs {
     //Whether the user has setup the app or not
@@ -26,4 +26,7 @@ public class Prefs {
 
     //Time from home to work. Single length for now (same for going and return)
     public static final String RIDE_LENGTH_MINUTE = "ride_length_minute";
+
+    //
+    public static final String ALARM_MINUTE_INTERVAL = "alarm_minute_interval";
 }

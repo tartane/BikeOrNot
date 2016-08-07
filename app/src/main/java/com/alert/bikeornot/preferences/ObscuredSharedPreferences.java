@@ -1,4 +1,4 @@
-package com.bikeornot.preferences;
+package com.alert.bikeornot.preferences;
 
 import android.annotation.TargetApi;
 import android.content.Context;

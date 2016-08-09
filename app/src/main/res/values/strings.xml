@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">BikeOrNot</string>
     <string name="api_key">e71fecf697c3e2e35d2a06f38b177f23</string>
+    <string name="title_settings">Settings</string>
 </resources>

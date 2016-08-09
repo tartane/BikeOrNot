@@ -17,7 +17,7 @@ public class BootReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         //Make sure the user has setup the app before showing notification
-        if(PrefUtils.get(context, Prefs.IS_SETUP, false)){
+        if(PrefUtils.get(context, Prefs.IS_CONFIGURED, false)){
             int notificationHour = PrefUtils.get(context, Prefs.NOTIFICATION_HOUR, 10);
             int notificationMinute = PrefUtils.get(context, Prefs.NOTIFICATION_MINUTE, 17);
 

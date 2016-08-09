@@ -1,8 +1,8 @@
 package com.alert.bikeornot.preferences;
 
 public class Prefs {
-    //Whether the user has setup the app or not
-    public static final String IS_SETUP = "is_setup";
+    //Whether the user has configured the app or not
+    public static final String IS_CONFIGURED = "is_setup";
 
     //The time the notification will be displayed. Must be before Going Time.
     public static final String NOTIFICATION_HOUR = "notification_hour";
@@ -27,6 +27,4 @@ public class Prefs {
     //Time from home to work. Single length for now (same for going and return)
     public static final String RIDE_LENGTH_MINUTE = "ride_length_minute";
 
-    //
-    public static final String ALARM_MINUTE_INTERVAL = "alarm_minute_interval";
 }

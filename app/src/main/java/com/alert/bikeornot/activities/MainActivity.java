@@ -5,6 +5,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.alert.bikeornot.BootReceiver;
 import com.alert.bikeornot.R;
@@ -25,6 +28,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Bind(R.id.btnSchedule)
     Button btnSchedule;
 
+    @Bind(R.id.layBikeStatus)
+    RelativeLayout layBikeStatus;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,7 +39,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         btnSchedule.setOnClickListener(this);
 
+        layBikeStatus.setPadding(0, getStatusBarHeight(), 0, 0);
 
+    }
+
+
+    public int getStatusBarHeight() {
+
+        int result = 0;
+
+        int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = getResources().getDimensionPixelSize(resourceId);
+        }
+
+        return result;
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.alert.bikeornot.activities;
 
-import android.content.Intent;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -31,23 +32,49 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Bind(R.id.layBikeStatus)
     RelativeLayout layBikeStatus;
 
+    @Bind(R.id.layAppBar)
+    AppBarLayout layAppBar;
+
     @Bind(R.id.toolbar)
     Toolbar toolbar;
+
+    @Bind(R.id.layCollapsingToolbar)
+    CollapsingToolbarLayout layCollapsingToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         boolean isConfigured = PrefUtils.get(this, Prefs.IS_CONFIGURED, false);
         if(!isConfigured) {
+            /*
             startActivity(new Intent(MainActivity.this, SettingsActivity.class));
-            finish();
+            finish();*/
         }
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         btnSchedule.setOnClickListener(this);
 
-        layBikeStatus.setPadding(0, getStatusBarHeight(), 0, 0);
+        layBikeStatus.setPadding(0, 0, 0, getStatusBarHeight());
+        layCollapsingToolbar.setTitle(" ");
+        layAppBar.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            boolean isShow = false;
+            int scrollRange = -1;
+
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                if (scrollRange == -1) {
+                    scrollRange = appBarLayout.getTotalScrollRange();
+                }
+                if (scrollRange + verticalOffset == 0) {
+                    layCollapsingToolbar.setTitle("Bike today!");
+                    isShow = true;
+                } else if(isShow) {
+                    layCollapsingToolbar.setTitle(" ");
+                    isShow = false;
+                }
+            }
+        });
     }
 
 

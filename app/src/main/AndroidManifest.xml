@@ -21,6 +21,10 @@
             </intent-filter>
         </activity>
 
+        <activity android:name="com.alert.bikeornot.activities.SettingsActivity">
+
+        </activity>
+
         <receiver android:name="com.alert.bikeornot.BootReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>

@@ -58,6 +58,7 @@ public class BootReceiver extends BroadcastReceiver {
         calendar.setTimeInMillis(System.currentTimeMillis());
         calendar.set(Calendar.HOUR_OF_DAY, notificationHour);
         calendar.set(Calendar.MINUTE, notificationMinute);
+        calendar.set(Calendar.SECOND, 0);
 
         //Repeating alarm or boot
         if(nextDay) {

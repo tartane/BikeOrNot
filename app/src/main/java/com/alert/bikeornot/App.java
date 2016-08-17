@@ -13,6 +13,16 @@ public class App extends Application {
     private static OkHttpClient sHttpClient;
     private static Gson mGson;
     private static Context mContext;
+    public static Context getContext() {
+        return mContext;
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        mContext = this;
+
+    }
 
     public static OkHttpClient getHttpClient() {
         if (sHttpClient == null) {

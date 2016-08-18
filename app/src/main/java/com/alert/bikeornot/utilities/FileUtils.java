@@ -17,7 +17,7 @@ import java.io.OutputStreamWriter;
 
 public class FileUtils {
 
-    private final String FILE_NAME = "forecast.txt";
+    private static final String FILE_NAME = "forecast.txt";
 
     public static boolean writeObjectToFile(Context context, Object data) {
         try {

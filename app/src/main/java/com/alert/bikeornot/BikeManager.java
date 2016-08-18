@@ -1,20 +1,46 @@
 package com.alert.bikeornot;
 
 import android.app.NotificationManager;
+import android.content.Context;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
+import android.zetterstrom.com.forecast.ForecastClient;
+import android.zetterstrom.com.forecast.ForecastConfiguration;
 import android.zetterstrom.com.forecast.models.DataPoint;
 import android.zetterstrom.com.forecast.models.Forecast;
 
 import com.alert.bikeornot.enums.EBikeOrNot;
+import com.alert.bikeornot.models.BikeOrNotResponse;
 import com.alert.bikeornot.preferences.Prefs;
+import com.alert.bikeornot.utilities.FileUtils;
 import com.alert.bikeornot.utilities.PrefUtils;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class BikeManager {
-    public static EBikeOrNot BikeOrNot(Forecast forecast) {
+
+    public static BikeOrNotResponse BikeOrNotDaily(DataPoint dataPoint) {
+
+        EBikeOrNot currentStatus;
+
+        if(dataPoint.getPrecipProbability() >= 0.50) {
+            currentStatus = EBikeOrNot.No;
+        } else if(dataPoint.getPrecipProbability() >= 0.30 && dataPoint.getPrecipProbability() < 0.50) {
+            currentStatus = EBikeOrNot.Maybe;
+        } else {
+            currentStatus = EBikeOrNot.Yes;
+        }
+
+        return new BikeOrNotResponse(currentStatus);
+    }
+
+    public static BikeOrNotResponse BikeOrNotHourly(ArrayList<DataPoint> dataPoints) {
+
 
         int goingStartTimeHour = PrefUtils.get(App.getContext(), Prefs.GOING_START_TIME_HOUR, 8);
         int goingStartTimeMinute = PrefUtils.get(App.getContext(), Prefs.GOING_START_TIME_MINUTE, 45);
@@ -57,20 +83,15 @@ public class BikeManager {
         ArrayList<DataPoint> dataPointToAnalyse = new ArrayList();
 
         Calendar forecastCal = Calendar.getInstance();
-        Calendar localCal = Calendar.getInstance();
-        for(DataPoint dataPoint: forecast.getHourly().getDataPoints()) {
-            forecastCal.setTime(dataPoint.getTime());
+        for(DataPoint dataPoint: dataPoints) {
 
-            int forecastDay = forecastCal.get(Calendar.DAY_OF_MONTH);
+            forecastCal.setTime(dataPoint.getTime());
             int forecastHour = forecastCal.get(Calendar.HOUR_OF_DAY);
 
-            int localDay = localCal.get(Calendar.DAY_OF_MONTH);
-
-            if(forecastDay == localDay) {
-                if(hoursToCheck.contains(forecastHour)) {
-                    dataPointToAnalyse.add(dataPoint);
-                }
+            if(hoursToCheck.contains(forecastHour)) {
+                dataPointToAnalyse.add(dataPoint);
             }
+
         }
 
         EBikeOrNot currentStatus = EBikeOrNot.Unknown;
@@ -88,53 +109,67 @@ public class BikeManager {
             }
         }
 
-        return currentStatus;
+        return new BikeOrNotResponse(currentStatus);
 
     }
 
-    public static void ShowNotification(EBikeOrNot bikeOrNot) {
+    public static ArrayList<DataPoint> GetTodayDatapoints(Forecast forecast) {
+        ArrayList<DataPoint> todayDatapoints = new ArrayList<>();
+        Calendar todayCal = Calendar.getInstance();
+        Calendar forecastCal = Calendar.getInstance();
+        for(DataPoint dataPoint: forecast.getHourly().getDataPoints()) {
+            forecastCal.setTime(dataPoint.getTime());
+            int day = todayCal.get(Calendar.DAY_OF_MONTH);
+
+            if(day == forecastCal.get(Calendar.DAY_OF_MONTH)) {
+                todayDatapoints.add(dataPoint);
+            }
+        }
+        return todayDatapoints;
+    }
+
+    public static void ShowNotification(BikeOrNotResponse bikeResponse) {
 
         int bicycleDrawable = R.drawable.ic_bicycle_white;
-        int backgroundIconColor;
-        String title;
-        String text;
-
-        switch(bikeOrNot) {
-            /*TODO It would be nice to add lots of random texts and titles.*/
-            case Yes:
-                title = "Bike today!";
-                text = "Weather looks nice today. Get on your bike!";
-                backgroundIconColor = ContextCompat.getColor(App.getContext(), R.color.greenPrimary);
-                break;
-            case Maybe:
-                title = "Feeling lucky today?";
-                text = "then take the chance and get on your bike!";
-                backgroundIconColor = ContextCompat.getColor(App.getContext(), R.color.orangePrimary);
-                break;
-            case No:
-                title = "Eww.";
-                text = "Biking might not be the best idea today.";
-                backgroundIconColor = ContextCompat.getColor(App.getContext(), R.color.redPrimary);
-                break;
-            case Unknown:
-            default:
-                bicycleDrawable = R.drawable.ic_bicycle_white;
-                title = "Unknown weather.";
-                text = "Unable to get the forecast of today... Your call.";
-                backgroundIconColor = ContextCompat.getColor(App.getContext(), android.R.color.black);
-                break;
-        }
 
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(App.getContext())
-                            .setColor(backgroundIconColor)
+                            .setColor(bikeResponse.getColor())
                             .setSmallIcon(bicycleDrawable)
-                            .setContentTitle(title)
-                            .setContentText(text);
+                            .setContentTitle(bikeResponse.getTitle())
+                            .setContentText(bikeResponse.getText());
 
         NotificationManager notificationManager =
                 (NotificationManager) App.getContext().getSystemService(App.getContext().NOTIFICATION_SERVICE);
 
         notificationManager.notify(321, builder.build());
+    }
+
+    public static void FetchWeatherApi(final Context context, final Callback<Forecast> callback) {
+        ForecastConfiguration configuration =
+                new ForecastConfiguration.Builder(context.getString(R.string.api_key)).build();
+
+        ForecastClient.create(configuration);
+
+        //If the user decide a different location for the going/return, i'll need to do 2 request
+        double goingLatitude = PrefUtils.get(context, Prefs.GOING_LATITUDE, 45.4765450);
+        double goingLongitude = PrefUtils.get(context, Prefs.GOING_LONGITUDE, -75.7012720);
+
+        ForecastClient.getInstance()
+                .getForecast(goingLatitude, goingLongitude, new Callback<Forecast>() {
+                    @Override
+                    public void onResponse(Call<Forecast> forecastCall, Response<Forecast> response) {
+                        if (response.isSuccessful()) {
+                            //Save for offline uses
+                            FileUtils.writeObjectToFile(context, response.body());
+                            callback.onResponse(forecastCall, response);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Forecast> forecastCall, Throwable t) {
+                        callback.onFailure(forecastCall, t);
+                    }
+                });
     }
 }

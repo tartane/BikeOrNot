@@ -16,7 +16,7 @@
                     android:id="@+id/layCollapsingToolbar"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:contentScrim="@color/redPrimary"
+                    app:contentScrim="@color/greenPrimary"
                     app:statusBarScrim="@android:color/transparent"
                     app:expandedTitleMarginEnd="64dp"
                     app:expandedTitleMarginStart="48dp"
@@ -37,9 +37,9 @@
                                     android:scaleType="centerCrop" />
 
                                 <View
+                                    android:id="@+id/viewOverlay"
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
-                                    android:background="@color/redPrimary"
                                     android:alpha="0.8"></View>
 
                                 <RelativeLayout

@@ -5,12 +5,19 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.zetterstrom.com.forecast.models.DataPoint;
 
+import com.alert.bikeornot.BikeManager;
 import com.alert.bikeornot.R;
+import com.alert.bikeornot.models.BikeOrNotResponse;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
 
 public class DailyForecastAdapter extends RecyclerView.Adapter {
@@ -35,16 +42,28 @@ public class DailyForecastAdapter extends RecyclerView.Adapter {
         switch (viewType) {
             case TYPE_ENABLED:
                 v = mInflater.inflate(R.layout.row_forecast, parent, false);
-                return new DailyForecastAdapter.ViewHolder(v);
+                return new DailyForecastAdapter.ForeCastViewHolder(v);
             case TYPE_DISABLED:
             default:
                 v = mInflater.inflate(R.layout.row_forecast, parent, false);
-                return new DailyForecastAdapter.ViewHolder(v);
+                return new DailyForecastAdapter.ForeCastViewHolder(v);
         }
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        ForeCastViewHolder foreCastHolder = (ForeCastViewHolder) holder;
+        DataPoint dataPoint = getItem(position);
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(dataPoint.getTime());
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String formattedDate = simpleDateFormat.format(cal.getTime());
+        foreCastHolder.txtDate.setText(formattedDate);
+
+        BikeOrNotResponse response = BikeManager.BikeOrNotDaily(dataPoint);
+
+        foreCastHolder.imgBikeStatus.setBackground(response.getBikeDrawable());
 
     }
 
@@ -73,10 +92,15 @@ public class DailyForecastAdapter extends RecyclerView.Adapter {
         mItemClickListener = listener;
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ForeCastViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
+        @Bind(R.id.imgBikeStatus)
+        ImageView imgBikeStatus;
 
-        public ViewHolder(View itemView) {
+        @Bind(R.id.txtDate)
+        TextView txtDate;
+
+        public ForeCastViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
 
@@ -98,6 +122,11 @@ public class DailyForecastAdapter extends RecyclerView.Adapter {
             }
             notifyDataSetChanged();
         }
+    }
+
+    public void setItems(ArrayList<DataPoint> items) {
+        mItems.clear();
+        addItems(items);
     }
 
     public void clear(){

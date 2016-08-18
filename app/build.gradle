@@ -29,4 +29,5 @@ dependencies {
     compile 'com.squareup.okio:okio:1.6.0'
     compile 'com.squareup.okhttp:okhttp:2.5.0'
     compile 'android.zetterstrom.com.forecast:forecast:1.1.1'
+    compile 'de.hdodenhof:circleimageview:2.1.0'
 }

@@ -27,4 +27,7 @@ public class Prefs {
     //Time from home to work. Single length for now (same for going and return)
     public static final String RIDE_LENGTH_MINUTE = "ride_length_minute";
 
+    //Time of the latest refresh in millis
+    public static final String UPDATED_TIME = "updated_time";
+
 }

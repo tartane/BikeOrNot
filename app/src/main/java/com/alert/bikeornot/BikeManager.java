@@ -3,11 +3,11 @@ package com.alert.bikeornot;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.ContextCompat;
 import android.zetterstrom.com.forecast.ForecastClient;
 import android.zetterstrom.com.forecast.ForecastConfiguration;
 import android.zetterstrom.com.forecast.models.DataPoint;
 import android.zetterstrom.com.forecast.models.Forecast;
+import android.zetterstrom.com.forecast.models.Unit;
 
 import com.alert.bikeornot.enums.EBikeOrNot;
 import com.alert.bikeornot.models.BikeOrNotResponse;
@@ -128,6 +128,22 @@ public class BikeManager {
         return todayDatapoints;
     }
 
+    //Everything except today
+    public static ArrayList<DataPoint> GetWeeklyDatapoints(Forecast forecast) {
+        ArrayList<DataPoint> weeklyDatapoints = new ArrayList<>();
+        Calendar todayCal = Calendar.getInstance();
+        Calendar forecastCal = Calendar.getInstance();
+        for(DataPoint dataPoint: forecast.getHourly().getDataPoints()) {
+            forecastCal.setTime(dataPoint.getTime());
+            int day = todayCal.get(Calendar.DAY_OF_MONTH);
+
+            if(day != forecastCal.get(Calendar.DAY_OF_MONTH)) {
+                weeklyDatapoints.add(dataPoint);
+            }
+        }
+        return weeklyDatapoints;
+    }
+
     public static void ShowNotification(BikeOrNotResponse bikeResponse) {
 
         int bicycleDrawable = R.drawable.ic_bicycle_white;
@@ -146,8 +162,9 @@ public class BikeManager {
     }
 
     public static void FetchWeatherApi(final Context context, final Callback<Forecast> callback) {
+        //TODO default unit should be in the settings
         ForecastConfiguration configuration =
-                new ForecastConfiguration.Builder(context.getString(R.string.api_key)).build();
+                new ForecastConfiguration.Builder(context.getString(R.string.api_key)).setDefaultUnit(Unit.CA).build();
 
         ForecastClient.create(configuration);
 

@@ -6,4 +6,10 @@
         android:title="@string/refresh"
         app:showAsAction="always"
         android:icon="@drawable/ic_refresh_white_24dp"></item>
+
+    <item
+        android:id="@+id/menuSettings"
+        android:title="@string/settings"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_settings_white_24dp"></item>
 </menu>

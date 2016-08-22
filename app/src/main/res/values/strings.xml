@@ -1,7 +1,8 @@
 <resources>
-    <string name="app_name">BikeOrNot</string>
-    <string name="api_key">e71fecf697c3e2e35d2a06f38b177f23</string>
-    <string name="title_settings">Settings</string>
+    <string translatable="false" name="app_name">BikeOrNot</string>
+    <string translatable="false" name="api_key">e71fecf697c3e2e35d2a06f38b177f23</string>
     <string name="refresh">Refresh</string>
     <string name="unknown_error_refresh">An unknown error occurred while refreshing the forecast.</string>
+    <string name="updated">Updated</string>
+    <string name="settings">Settings</string>
 </resources>

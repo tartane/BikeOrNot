@@ -16,6 +16,7 @@ import com.alert.bikeornot.models.BikeOrNotResponse;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -57,14 +58,19 @@ public class DailyForecastAdapter extends RecyclerView.Adapter {
 
         Calendar cal = Calendar.getInstance();
         cal.setTime(dataPoint.getTime());
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String formattedDate = simpleDateFormat.format(cal.getTime());
-        foreCastHolder.txtDate.setText(formattedDate);
+        String formattedDate = new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());
+        //TODO is this possible in other languages?
+        String dayOfWeek = new SimpleDateFormat("EEEE", Locale.ENGLISH).format(cal.getTime());
+        foreCastHolder.lblDate.setText(dayOfWeek + ", " + formattedDate);
+
 
         BikeOrNotResponse response = BikeManager.BikeOrNotDaily(dataPoint);
 
         foreCastHolder.imgBikeStatus.setBackground(response.getBikeDrawable());
-
+        foreCastHolder.lblStatusText.setText(response.getText());
+        //TODO Fahrenheit or celsius should come from prefs.
+        String temperature = String.valueOf(Math.round(dataPoint.getTemperature())) + "°C";
+        foreCastHolder.lblTemperature.setText(temperature);
     }
 
     @Override
@@ -97,8 +103,14 @@ public class DailyForecastAdapter extends RecyclerView.Adapter {
         @Bind(R.id.imgBikeStatus)
         ImageView imgBikeStatus;
 
-        @Bind(R.id.txtDate)
-        TextView txtDate;
+        @Bind(R.id.lblDate)
+        TextView lblDate;
+
+        @Bind(R.id.lblStatusText)
+        TextView lblStatusText;
+
+        @Bind(R.id.lblTemperature)
+        TextView lblTemperature;
 
         public ForeCastViewHolder(View itemView) {
             super(itemView);

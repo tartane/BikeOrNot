@@ -34,10 +34,11 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(R.string.title_settings);
+        getSupportActionBar().setTitle(R.string.settings);
 
         if(getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         mLayoutManager = new LinearLayoutManager(this);
 
         recyclerView.setLayoutManager(mLayoutManager);

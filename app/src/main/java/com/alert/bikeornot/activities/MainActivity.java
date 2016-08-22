@@ -1,5 +1,6 @@
 package com.alert.bikeornot.activities;
 
+import android.content.Intent;
 import android.os.Build;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -8,6 +9,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.format.DateUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,7 +22,6 @@ import android.zetterstrom.com.forecast.models.Forecast;
 import com.alert.bikeornot.BikeManager;
 import com.alert.bikeornot.R;
 import com.alert.bikeornot.adapters.DailyForecastAdapter;
-import com.alert.bikeornot.enums.EBikeOrNot;
 import com.alert.bikeornot.models.BikeOrNotResponse;
 import com.alert.bikeornot.preferences.Prefs;
 import com.alert.bikeornot.utilities.FileUtils;
@@ -55,6 +56,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Bind(R.id.lblStatus)
     TextView lblStatus;
 
+    @Bind(R.id.lblUpdated)
+    TextView lblUpdated;
+
     private LinearLayoutManager mLayoutManager;
     private DailyForecastAdapter mAdapter;
 
@@ -77,7 +81,40 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         layBikeStatus.setPadding(0, 0, 0, getStatusBarHeight());
+
+        forecast = FileUtils.readObjectFromFile(this);
+
         layCollapsingToolbar.setTitle(" ");
+
+        if(forecast != null) {
+            UpdateViews(forecast);
+        }
+    }
+
+    private void UpdateViews(Forecast forecast) {
+        final BikeOrNotResponse response = BikeManager.BikeOrNotHourly(BikeManager.GetTodayDatapoints(forecast));
+
+        if(mAdapter == null) {
+            mAdapter = new DailyForecastAdapter(this, BikeManager.GetWeeklyDatapoints(forecast));
+            mAdapter.setOnItemClickListener(mOnItemClickListener);
+            mRecyclerView.setAdapter(mAdapter);
+        }
+        else {
+            mAdapter.setItems(BikeManager.GetWeeklyDatapoints(forecast));
+        }
+
+        viewOverlay.setBackgroundColor(response.getColor());
+        layCollapsingToolbar.setContentScrimColor(response.getColor());
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(response.getDarkColor());
+        }
+
+        lblStatus.setText(response.getTitle());
+
+        long currentTime = System.currentTimeMillis();
+        long updateTime = PrefUtils.get(MainActivity.this, Prefs.UPDATED_TIME, currentTime);
+        lblUpdated.setText(getString(R.string.updated) + ": " + DateUtils.getRelativeTimeSpanString(updateTime, currentTime, DateUtils.MINUTE_IN_MILLIS, DateUtils.FORMAT_ABBREV_RELATIVE));
+
         layAppBar.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             boolean isShow = false;
             int scrollRange = -1;
@@ -88,7 +125,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     scrollRange = appBarLayout.getTotalScrollRange();
                 }
                 if (scrollRange + verticalOffset == 0) {
-                    layCollapsingToolbar.setTitle("Bike today!");
+                    layCollapsingToolbar.setTitle(response.getTitle());
                     isShow = true;
                 } else if(isShow) {
                     layCollapsingToolbar.setTitle(" ");
@@ -96,26 +133,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
         });
-
-        forecast = FileUtils.readObjectFromFile(this);
-
-        if(forecast != null) {
-            mAdapter = new DailyForecastAdapter(this, forecast.getDaily().getDataPoints());
-            mAdapter.setOnItemClickListener(mOnItemClickListener);
-            mRecyclerView.setAdapter(mAdapter);
-
-            BikeOrNotResponse response = BikeManager.BikeOrNotHourly(BikeManager.GetTodayDatapoints(forecast));
-
-            viewOverlay.setBackgroundColor(response.getColor());
-            layCollapsingToolbar.setContentScrimColor(response.getColor());
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                getWindow().setStatusBarColor(response.getDarkColor());
-            }
-
-            lblStatus.setText(response.getTitle());
-
-
-        }
     }
 
     @Override
@@ -132,17 +149,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 BikeManager.FetchWeatherApi(this, new Callback<Forecast>() {
                     @Override
                     public void onResponse(Call<Forecast> call, Response<Forecast> response) {
-                        Forecast forecast = response.body();
-                        mAdapter.setItems(forecast.getDaily().getDataPoints());
-
+                        long currentTime = System.currentTimeMillis();
+                        PrefUtils.save(MainActivity.this, Prefs.UPDATED_TIME, currentTime);
+                        UpdateViews(response.body());
                     }
 
                     @Override
                     public void onFailure(Call<Forecast> call, Throwable t) {
                         Toast.makeText(MainActivity.this, R.string.unknown_error_refresh, Toast.LENGTH_LONG).show();
-
                     }
                 });
+                break;
+            case R.id.menuSettings:
+                startActivity(new Intent(MainActivity.this, SettingsActivity.class));
                 break;
         }
 

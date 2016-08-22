@@ -1,21 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="10dp">
-
-        <ImageView
-            android:id="@+id/imgBikeStatus"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="@drawable/circle_bike_green"/>
+    android:layout_height="72dp">
 
 
+    <ImageView
+        android:id="@+id/imgBikeStatus"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginLeft="16dp"
+        android:layout_centerVertical="true"
+        android:background="@drawable/circle_bike_green"/>
 
     <TextView
-        android:id="@+id/txtDate"
+        android:id="@+id/lblTemperature"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-</LinearLayout>
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:textSize="16sp"
+        android:paddingRight="16dp"
+        android:paddingLeft="16dp"
+        tools:text="30°C"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="72dp"
+        android:layout_toLeftOf="@id/lblTemperature"
+        android:layout_centerVertical="true"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/lblDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/blackPrimaryDark"
+            android:textSize="16sp"
+            tools:text="Monday, 2016-08-22"/>
+        <TextView
+            android:id="@+id/lblStatusText"
+            android:textSize="13sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Weather looks nice today. Get on your bike!"/>
+    </LinearLayout>
+
+
+
+
+</RelativeLayout>

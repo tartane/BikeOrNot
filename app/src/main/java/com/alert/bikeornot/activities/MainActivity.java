@@ -26,6 +26,9 @@ import com.alert.bikeornot.models.BikeOrNotResponse;
 import com.alert.bikeornot.preferences.Prefs;
 import com.alert.bikeornot.utilities.FileUtils;
 import com.alert.bikeornot.utilities.PrefUtils;
+import com.alert.bikeornot.utilities.TimeUtils;
+
+import java.sql.Time;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -53,8 +56,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Bind(R.id.viewOverlay)
     View viewOverlay;
 
-    @Bind(R.id.lblStatus)
-    TextView lblStatus;
+    @Bind(R.id.lblStatusTitle)
+    TextView lblStatusTitle;
+
+    @Bind(R.id.lblStatusText)
+    TextView lblStatusText;
 
     @Bind(R.id.lblUpdated)
     TextView lblUpdated;
@@ -109,11 +115,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             getWindow().setStatusBarColor(response.getDarkColor());
         }
 
-        lblStatus.setText(response.getTitle());
+        lblStatusTitle.setText(response.getTitle());
+        lblStatusText.setText(response.getText());
 
-        long currentTime = System.currentTimeMillis();
-        long updateTime = PrefUtils.get(MainActivity.this, Prefs.UPDATED_TIME, currentTime);
-        lblUpdated.setText(getString(R.string.updated) + ": " + DateUtils.getRelativeTimeSpanString(updateTime, currentTime, DateUtils.MINUTE_IN_MILLIS, DateUtils.FORMAT_ABBREV_RELATIVE));
+        long updateTime = PrefUtils.get(MainActivity.this, Prefs.UPDATED_TIME, System.currentTimeMillis());
+        lblUpdated.setText(getString(R.string.updated) + " " + TimeUtils.getTimeAgo(updateTime));
 
         layAppBar.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             boolean isShow = false;

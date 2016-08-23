@@ -21,21 +21,21 @@ public class BikeOrNotResponse {
             /*TODO It would be nice to add lots of random texts and titles.*/
             case Yes:
                 title = "Bike today!";
-                text = "Weather looks nice today. Get on your bike!";
+                text = "Weather looks nice. Get on your bike!";
                 color = ContextCompat.getColor(App.getContext(), R.color.greenPrimary);
                 darkColor = ContextCompat.getColor(App.getContext(), R.color.greenPrimaryDark);
                 bikeDrawable = ContextCompat.getDrawable(App.getContext(), R.drawable.circle_bike_green);
                 break;
             case Maybe:
                 title = "Feeling lucky today?";
-                text = "then take the chance and get on your bike!";
+                text = "Take a chance and get on your bike!";
                 color = ContextCompat.getColor(App.getContext(), R.color.orangePrimary);
                 darkColor = ContextCompat.getColor(App.getContext(), R.color.orangePrimaryDark);
                 bikeDrawable = ContextCompat.getDrawable(App.getContext(), R.drawable.circle_bike_orange);
                 break;
             case No:
                 title = "Eww.";
-                text = "Biking might not be the best idea today.";
+                text = "Biking might not be the best idea.";
                 color = ContextCompat.getColor(App.getContext(), R.color.redPrimary);
                 darkColor = ContextCompat.getColor(App.getContext(), R.color.redPrimaryDark);
                 bikeDrawable = ContextCompat.getDrawable(App.getContext(), R.drawable.circle_bike_red);
@@ -43,7 +43,7 @@ public class BikeOrNotResponse {
             case Unknown:
             default:
                 title = "Unknown weather.";
-                text = "Unable to get the forecast of today... Your call.";
+                text = "Unable to get the forecast... Your call.";
                 color = ContextCompat.getColor(App.getContext(), R.color.blackPrimary);
                 darkColor = ContextCompat.getColor(App.getContext(), R.color.blackPrimaryDark);
                 bikeDrawable = ContextCompat.getDrawable(App.getContext(), R.drawable.circle_bike_black);

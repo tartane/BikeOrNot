@@ -95,17 +95,38 @@ public class BikeManager {
         }
 
         EBikeOrNot currentStatus = EBikeOrNot.Unknown;
+        if(dataPointToAnalyse.size() > 0) {
+            //TODO review the calculate. maybe an average of all hours precipitation? The values should come from the prefs.
+            for (DataPoint datapoint : dataPointToAnalyse) {
+                if (datapoint.getPrecipProbability() >= 0.50) {
+                    currentStatus = EBikeOrNot.No;
+                    break;
+                } else if (datapoint.getPrecipProbability() >= 0.30 && datapoint.getPrecipProbability() < 0.50) {
+                    currentStatus = EBikeOrNot.Maybe;
+                    break;
+                } else {
+                    currentStatus = EBikeOrNot.Yes;
+                }
+            }
+        } else {
 
-        //TODO review the calculate. maybe an average of all hours precipitation? The values should come from the prefs.
-        for(DataPoint datapoint: dataPointToAnalyse) {
-            if(datapoint.getPrecipProbability() >= 0.50) {
-                currentStatus = EBikeOrNot.No;
-                break;
-            } else if(datapoint.getPrecipProbability() >= 0.30 && datapoint.getPrecipProbability() < 0.50) {
-                currentStatus = EBikeOrNot.Maybe;
-                break;
-            } else {
-                currentStatus = EBikeOrNot.Yes;
+            Calendar todayCal = Calendar.getInstance();
+            //We don't have any point to analyse (time is probably after the start time of prefs)
+            //Check the upcoming hours...
+            for (DataPoint datapoint : dataPoints) {
+                forecastCal.setTime(datapoint.getTime());
+
+                if(forecastCal.get(Calendar.HOUR_OF_DAY) >= todayCal.get(Calendar.HOUR_OF_DAY)) {
+                    if (datapoint.getPrecipProbability() >= 0.50) {
+                        currentStatus = EBikeOrNot.No;
+                        break;
+                    } else if (datapoint.getPrecipProbability() >= 0.30 && datapoint.getPrecipProbability() < 0.50) {
+                        currentStatus = EBikeOrNot.Maybe;
+                        break;
+                    } else {
+                        currentStatus = EBikeOrNot.Yes;
+                    }
+                }
             }
         }
 
@@ -133,7 +154,7 @@ public class BikeManager {
         ArrayList<DataPoint> weeklyDatapoints = new ArrayList<>();
         Calendar todayCal = Calendar.getInstance();
         Calendar forecastCal = Calendar.getInstance();
-        for(DataPoint dataPoint: forecast.getHourly().getDataPoints()) {
+        for(DataPoint dataPoint: forecast.getDaily().getDataPoints()) {
             forecastCal.setTime(dataPoint.getTime());
             int day = todayCal.get(Calendar.DAY_OF_MONTH);
 
@@ -164,7 +185,7 @@ public class BikeManager {
     public static void FetchWeatherApi(final Context context, final Callback<Forecast> callback) {
         //TODO default unit should be in the settings
         ForecastConfiguration configuration =
-                new ForecastConfiguration.Builder(context.getString(R.string.api_key)).setDefaultUnit(Unit.CA).build();
+                new ForecastConfiguration.Builder(context.getString(R.string.api_key)).setDefaultUnit(Unit.SI).build();
 
         ForecastClient.create(configuration);
 

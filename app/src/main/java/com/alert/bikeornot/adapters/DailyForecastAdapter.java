@@ -69,8 +69,9 @@ public class DailyForecastAdapter extends RecyclerView.Adapter {
         foreCastHolder.imgBikeStatus.setBackground(response.getBikeDrawable());
         foreCastHolder.lblStatusText.setText(response.getText());
         //TODO Fahrenheit or celsius should come from prefs.
-        String temperature = String.valueOf(Math.round(dataPoint.getTemperature())) + "°C";
+        String temperature = "Max. " + String.valueOf(Math.round(dataPoint.getTemperatureMax())) + "°C";
         foreCastHolder.lblTemperature.setText(temperature);
+
     }
 
     @Override

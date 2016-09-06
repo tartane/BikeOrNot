@@ -42,13 +42,13 @@ public class BikeManager {
     public static BikeOrNotResponse BikeOrNotHourly(ArrayList<DataPoint> dataPoints) {
 
 
-        int goingStartTimeHour = PrefUtils.get(App.getContext(), Prefs.GOING_START_TIME_HOUR, 8);
-        int goingStartTimeMinute = PrefUtils.get(App.getContext(), Prefs.GOING_START_TIME_MINUTE, 45);
+        int goingStartTimeHour = PrefUtils.get(App.getContext(), Prefs.START_TIME_HOUR, 8);
+        int goingStartTimeMinute = PrefUtils.get(App.getContext(), Prefs.START_TIME_MINUTE, 45);
 
-        int returnStartTimeHour = PrefUtils.get(App.getContext(), Prefs.RETURN_START_TIME_HOUR, 17);
-        int returnStartTimeMinute = PrefUtils.get(App.getContext(), Prefs.RETURN_START_TIME_MINUTE, 00);
+        int returnStartTimeHour = PrefUtils.get(App.getContext(), Prefs.START_TIME_HOUR, 17);
+        int returnStartTimeMinute = PrefUtils.get(App.getContext(), Prefs.START_TIME_MINUTE, 00);
 
-        int rideLengthMinute = PrefUtils.get(App.getContext(), Prefs.RIDE_LENGTH_MINUTE, 25);
+        int rideLengthMinute = PrefUtils.get(App.getContext(), Prefs.RIDE_LENGTH_MINUTE, 0);
 
         ArrayList<Integer> hoursToCheck = new ArrayList();
         hoursToCheck.add(goingStartTimeHour);
@@ -190,11 +190,12 @@ public class BikeManager {
         ForecastClient.create(configuration);
 
         //If the user decide a different location for the going/return, i'll need to do 2 request
-        double goingLatitude = PrefUtils.get(context, Prefs.GOING_LATITUDE, 45.4765450);
-        double goingLongitude = PrefUtils.get(context, Prefs.GOING_LONGITUDE, -75.7012720);
+        String gps = PrefUtils.get(context, Prefs.START_LOCATION, "0,0");
+        double startLatitude = Double.valueOf(gps.split(",")[0]);
+        double startLongitude = Double.valueOf(gps.split(",")[1]);
 
         ForecastClient.getInstance()
-                .getForecast(goingLatitude, goingLongitude, new Callback<Forecast>() {
+                .getForecast(startLatitude, startLongitude, new Callback<Forecast>() {
                     @Override
                     public void onResponse(Call<Forecast> forecastCall, Response<Forecast> response) {
                         if (response.isSuccessful()) {

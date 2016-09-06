@@ -1,5 +1,6 @@
 package com.alert.bikeornot.activities;
 
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -10,9 +11,12 @@ import android.support.v7.widget.Toolbar;
 
 import com.alert.bikeornot.R;
 import com.alert.bikeornot.preferences.PrefItem;
+import com.alert.bikeornot.preferences.Prefs;
 import com.alert.bikeornot.utilities.PrefUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
@@ -48,7 +52,25 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
     }
 
     private void refreshItems() {
+        mPrefItems = new ArrayList<>();
+        mPrefItems.add(getString(R.string.location));
+        mPrefItems.add(new PrefItem(this, R.drawable.ic_home_black_24dp, R.string.start_location, Prefs.START_LOCATION, "Not set",
+                new PrefItem.OnClickListener() {
+                    @Override
+                    public void onClick(final PrefItem item) {
 
+                    }
+                },
+                new PrefItem.SubTitleGenerator() {
+                    @Override
+                    public String get(PrefItem item) {
+                        String gps = (String) item.getValue();
+                        String startLatitude = gps.split(",")[0];
+                        String startLongitude = gps.split(",")[1];
+
+                        return startLatitude + ", " + startLongitude;
+                    }
+                }));
     }
 
     @Override

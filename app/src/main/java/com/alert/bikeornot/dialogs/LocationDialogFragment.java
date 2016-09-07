@@ -1,12 +1,12 @@
 package com.alert.bikeornot.dialogs;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.DialogInterface;
 import android.location.Location;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.alert.bikeornot.R;
 import com.google.android.gms.common.ConnectionResult;
@@ -21,7 +21,8 @@ import butterknife.ButterKnife;
 public class LocationDialogFragment extends DialogFragment implements LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     private LocationRequest mLocationRequest;
     private GoogleApiClient mGoogleApiClient;
-
+    private ResultListener mOnResultListener;
+    public static final String TITLE = "title";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -37,11 +38,33 @@ public class LocationDialogFragment extends DialogFragment implements LocationLi
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.dialog_location, container, false);
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_location, null, false);
         ButterKnife.bind(this, view);
 
-        return view;
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+        builder
+                .setView(view)
+                .setTitle(getArguments().getString(TITLE))
+                .setPositiveButton("ok",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //mOnResultListener.onNewValue(colorPicker.getColor());
+                                dialog.dismiss();
+                            }
+                        })
+                .setNegativeButton("cancel",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        }
+                );
+
+        return builder.create();
     }
 
     @Override
@@ -86,5 +109,13 @@ public class LocationDialogFragment extends DialogFragment implements LocationLi
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
 
+    }
+
+    public void setOnResultListener(ResultListener resultListener) {
+        mOnResultListener = resultListener;
+    }
+
+    public interface ResultListener {
+        public void onNewValue(LatLng gps);
     }
 }

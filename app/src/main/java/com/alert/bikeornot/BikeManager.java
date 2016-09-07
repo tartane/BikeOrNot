@@ -149,16 +149,15 @@ public class BikeManager {
         return todayDatapoints;
     }
 
-    //Everything except today
+    //Everything greater than today
     public static ArrayList<DataPoint> GetWeeklyDatapoints(Forecast forecast) {
         ArrayList<DataPoint> weeklyDatapoints = new ArrayList<>();
         Calendar todayCal = Calendar.getInstance();
         Calendar forecastCal = Calendar.getInstance();
         for(DataPoint dataPoint: forecast.getDaily().getDataPoints()) {
             forecastCal.setTime(dataPoint.getTime());
-            int day = todayCal.get(Calendar.DAY_OF_MONTH);
 
-            if(day != forecastCal.get(Calendar.DAY_OF_MONTH)) {
+            if(forecastCal.after(todayCal)) {
                 weeklyDatapoints.add(dataPoint);
             }
         }

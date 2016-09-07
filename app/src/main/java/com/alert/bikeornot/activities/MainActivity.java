@@ -26,6 +26,9 @@ import com.alert.bikeornot.preferences.Prefs;
 import com.alert.bikeornot.utilities.FileUtils;
 import com.alert.bikeornot.utilities.PrefUtils;
 import com.alert.bikeornot.utilities.TimeUtils;
+
+import java.util.ArrayList;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import retrofit2.Call;
@@ -97,9 +100,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         final BikeOrNotResponse response = BikeManager.BikeOrNotHourly(BikeManager.GetTodayDatapoints(forecast));
 
         if(mAdapter == null) {
-            mAdapter = new DailyForecastAdapter(this, BikeManager.GetWeeklyDatapoints(forecast));
-            mAdapter.setOnItemClickListener(mOnItemClickListener);
-            mRecyclerView.setAdapter(mAdapter);
+            ArrayList<DataPoint> weeklyDatapoints =  BikeManager.GetWeeklyDatapoints(forecast);
+            if(weeklyDatapoints.size() > 0) {
+                mAdapter = new DailyForecastAdapter(this, weeklyDatapoints);
+                mAdapter.setOnItemClickListener(mOnItemClickListener);
+                mRecyclerView.setAdapter(mAdapter);
+            } else {
+                //show bigger refresh button instead of list
+                //this will happen if the user as not updated the weather for a week
+            }
         }
         else {
             mAdapter.setItems(BikeManager.GetWeeklyDatapoints(forecast));

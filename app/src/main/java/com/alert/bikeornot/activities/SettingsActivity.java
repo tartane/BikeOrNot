@@ -1,6 +1,5 @@
 package com.alert.bikeornot.activities;
 
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -14,9 +13,9 @@ import com.alert.bikeornot.dialogs.LocationDialogFragment;
 import com.alert.bikeornot.preferences.PrefItem;
 import com.alert.bikeornot.preferences.Prefs;
 import com.alert.bikeornot.utilities.PrefUtils;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -25,6 +24,8 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
 
     private ArrayList<Object> mPrefItems = new ArrayList<>();
     private LinearLayoutManager mLayoutManager;
+    private final String DIALOG_HOME_LOCATION = "dialog_home_location";
+    private final String DIALOG_WORK_LOCATION = "dialog_work_location";
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -60,7 +61,17 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
                     @Override
                     public void onClick(final PrefItem item) {
                         LocationDialogFragment locationDialogFragment = new LocationDialogFragment();
-                        locationDialogFragment.
+                        Bundle bundle = new Bundle();
+                        bundle.putString(LocationDialogFragment.TITLE, item.getTitle());
+                        locationDialogFragment.setArguments(bundle);
+                        locationDialogFragment.setOnResultListener(new LocationDialogFragment.ResultListener() {
+                            @Override
+                            public void onNewValue(LatLng gps) {
+                                String gpsToSave = gps.latitude + "," + gps.longitude;
+                                item.saveValue(gpsToSave);
+                            }
+                        });
+                        locationDialogFragment.show(getFragmentManager(), DIALOG_HOME_LOCATION);
                 }
                 },
                 new PrefItem.SubTitleGenerator() {
@@ -74,11 +85,21 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
                     }
                 }));
 
-        mPrefItems.add(new PrefItem(this, R.drawable.ic_home_black_24dp, R.string.work_return_location, Prefs.RETURN_LOCATION, "Same as start location",
+        mPrefItems.add(new PrefItem(this, R.drawable.ic_work_black_24dp, R.string.work_return_location, Prefs.RETURN_LOCATION, "Same as start location",
                 new PrefItem.OnClickListener() {
                     @Override
                     public void onClick(final PrefItem item) {
+                        LocationDialogFragment locationDialogFragment = new LocationDialogFragment();
+                        Bundle bundle = new Bundle();
+                        bundle.putString(LocationDialogFragment.TITLE, item.getTitle());
+                        locationDialogFragment.setArguments(bundle);
+                        locationDialogFragment.setOnResultListener(new LocationDialogFragment.ResultListener() {
+                            @Override
+                            public void onNewValue(LatLng gps) {
 
+                            }
+                        });
+                        locationDialogFragment.show(getFragmentManager(), DIALOG_HOME_LOCATION);
                     }
                 },
                 new PrefItem.SubTitleGenerator() {

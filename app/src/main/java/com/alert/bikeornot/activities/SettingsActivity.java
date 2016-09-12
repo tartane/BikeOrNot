@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 
 import com.alert.bikeornot.R;
+import com.alert.bikeornot.adapters.SettingsListAdapter;
 import com.alert.bikeornot.dialogs.LocationDialogFragment;
 import com.alert.bikeornot.preferences.PrefItem;
 import com.alert.bikeornot.preferences.Prefs;
@@ -31,7 +32,7 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
     Toolbar toolbar;
 
     @Bind(R.id.recyclerView)
-    RecyclerView recyclerView;
+    RecyclerView mRecyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,16 +48,20 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
 
         mLayoutManager = new LinearLayoutManager(this);
 
-        recyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setLayoutManager(mLayoutManager);
 
         PrefUtils.getPrefs(this).registerOnSharedPreferenceChangeListener(this);
+
+        refreshItems();
+
+        mRecyclerView.setAdapter(new SettingsListAdapter(mPrefItems));
 
     }
 
     private void refreshItems() {
         mPrefItems = new ArrayList<>();
         mPrefItems.add(getString(R.string.location));
-        mPrefItems.add(new PrefItem(this, R.drawable.ic_home_black_24dp, R.string.home_start_location, Prefs.START_LOCATION, "Not set",
+        mPrefItems.add(new PrefItem(this, R.drawable.ic_home_black_24dp, R.string.home_start_location, Prefs.START_LOCATION, "",
                 new PrefItem.OnClickListener() {
                     @Override
                     public void onClick(final PrefItem item) {
@@ -78,14 +83,18 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
                     @Override
                     public String get(PrefItem item) {
                         String gps = (String) item.getValue();
-                        String startLatitude = gps.split(",")[0];
-                        String startLongitude = gps.split(",")[1];
+                        if(gps != item.getDefaultValue()) {
+                            String startLatitude = gps.split(",")[0];
+                            String startLongitude = gps.split(",")[1];
 
-                        return startLatitude + ", " + startLongitude;
+                            return startLatitude + ", " + startLongitude;
+                        }
+
+                        return "Not set";
                     }
                 }));
 
-        mPrefItems.add(new PrefItem(this, R.drawable.ic_work_black_24dp, R.string.work_return_location, Prefs.RETURN_LOCATION, "Same as start location",
+        mPrefItems.add(new PrefItem(this, R.drawable.ic_work_black_24dp, R.string.work_return_location, Prefs.RETURN_LOCATION, "",
                 new PrefItem.OnClickListener() {
                     @Override
                     public void onClick(final PrefItem item) {
@@ -106,10 +115,13 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
                     @Override
                     public String get(PrefItem item) {
                         String gps = (String) item.getValue();
-                        String startLatitude = gps.split(",")[0];
-                        String startLongitude = gps.split(",")[1];
+                        if(gps != item.getDefaultValue()) {
+                            String startLatitude = gps.split(",")[0];
+                            String startLongitude = gps.split(",")[1];
 
-                        return startLatitude + ", " + startLongitude;
+                            return startLatitude + ", " + startLongitude;
+                        }
+                        return "Same as start location";
                     }
                 }));
     }

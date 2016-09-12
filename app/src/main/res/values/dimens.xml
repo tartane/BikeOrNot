@@ -14,4 +14,6 @@
     <dimen name="iconlist_secondary_text_size">14sp</dimen>
     <dimen name="iconlist_item_twolines_height">72dp</dimen>
     <dimen name="iconlist_text_twolines_padding">10dp</dimen>
+
+    <dimen name="list_text_size">16sp</dimen>
 </resources>

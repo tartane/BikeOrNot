@@ -76,7 +76,7 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
                                 item.saveValue(gpsToSave);
                             }
                         });
-                        locationDialogFragment.show(getFragmentManager(), DIALOG_HOME_LOCATION);
+                        locationDialogFragment.show(getSupportFragmentManager(), DIALOG_HOME_LOCATION);
                 }
                 },
                 new PrefItem.SubTitleGenerator() {
@@ -108,7 +108,7 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
 
                             }
                         });
-                        locationDialogFragment.show(getFragmentManager(), DIALOG_HOME_LOCATION);
+                        locationDialogFragment.show(getSupportFragmentManager(), DIALOG_HOME_LOCATION);
                     }
                 },
                 new PrefItem.SubTitleGenerator() {

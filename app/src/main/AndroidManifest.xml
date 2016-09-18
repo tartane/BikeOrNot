@@ -14,6 +14,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyB7xQP813WF12HtWpJ4oE4uie7o1FFDN0k" />
+
         <activity android:name="com.alert.bikeornot.activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -2,11 +2,18 @@ package com.alert.bikeornot.dialogs;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.DialogInterface;
+import android.content.res.Configuration;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
+import android.support.v7.widget.LinearLayoutCompat;
+import android.util.DisplayMetrics;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.alert.bikeornot.R;
 import com.google.android.gms.common.ConnectionResult;
@@ -14,33 +21,52 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import butterknife.ButterKnife;
 
-public class LocationDialogFragment extends DialogFragment implements LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class LocationDialogFragment extends DialogFragment implements LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, OnMapReadyCallback {
     private LocationRequest mLocationRequest;
     private GoogleApiClient mGoogleApiClient;
     private ResultListener mOnResultListener;
+    private GoogleMap mMap;
+    private SupportMapFragment mapFragment;
     public static final String TITLE = "title";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
-                .addApi(LocationServices.API)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .build();
+    }
 
-
+    @Override
+    public void onDestroyView() {
+        if (getDialog() != null && getRetainInstance()) {
+            getDialog().setDismissMessage(null);
+        }
+        super.onDestroyView();
     }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_location, null, false);
         ButterKnife.bind(this, view);
+
+        mapFragment = (SupportMapFragment) getFragmentManager().findFragmentById(R.id.map);
+
+        mapFragment.getMapAsync(this);
+
+
+        mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
+                .addApi(LocationServices.API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
@@ -77,6 +103,10 @@ public class LocationDialogFragment extends DialogFragment implements LocationLi
     public void onStop() {
         // Disconnecting the client invalidates it.
         mGoogleApiClient.disconnect();
+        /*
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        ft.remove(mapFragment);
+        ft.commitAllowingStateLoss();*/
         super.onStop();
     }
 
@@ -87,6 +117,15 @@ public class LocationDialogFragment extends DialogFragment implements LocationLi
 
         LatLng latLng = new LatLng(currentLatitude, currentLongitude);
 
+        MarkerOptions options = new MarkerOptions()
+                .position(latLng)
+                .title("I am here!");
+
+        mMap.addMarker(options);
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 12.0f));
+
+        //Only the first one. We don't need to be super accurate.
+        LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
 
     }
 
@@ -113,6 +152,13 @@ public class LocationDialogFragment extends DialogFragment implements LocationLi
 
     public void setOnResultListener(ResultListener resultListener) {
         mOnResultListener = resultListener;
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+
+        mMap.setMyLocationEnabled(true);
     }
 
     public interface ResultListener {

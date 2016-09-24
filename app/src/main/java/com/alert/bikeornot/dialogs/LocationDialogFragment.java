@@ -3,17 +3,12 @@ package com.alert.bikeornot.dialogs;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.res.Configuration;
 import android.location.Location;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.ViewPager;
-import android.support.v7.widget.LinearLayoutCompat;
-import android.util.DisplayMetrics;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.alert.bikeornot.R;
 import com.google.android.gms.common.ConnectionResult;
@@ -25,7 +20,9 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import butterknife.ButterKnife;
@@ -36,8 +33,15 @@ public class LocationDialogFragment extends DialogFragment implements LocationLi
     private ResultListener mOnResultListener;
     private GoogleMap mMap;
     private SupportMapFragment mapFragment;
-    public static final String TITLE = "title";
-
+    private boolean customMarker = false;
+    private final float DEFAULT_ZOOM = 12.0f;
+    public static final String TITLE_ARG = "title";
+    public static final String OLD_LATLNG_ARG = "old_latlng";
+    private String dialogTitle = "";
+    private LatLng currentLatLng;
+    private LatLng customLatLng;
+    private LatLng oldLatLng;
+    private Marker marker;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,27 +61,27 @@ public class LocationDialogFragment extends DialogFragment implements LocationLi
         View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_location, null, false);
         ButterKnife.bind(this, view);
 
-        mapFragment = (SupportMapFragment) getFragmentManager().findFragmentById(R.id.map);
-
-        mapFragment.getMapAsync(this);
-
-
+        dialogTitle = getArguments().getString(TITLE_ARG);
+        oldLatLng = getArguments().getParcelable(OLD_LATLNG_ARG);
         mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
                 .addApi(LocationServices.API)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .build();
 
+
+        setUpMapIfNeeded();
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         builder
                 .setView(view)
-                .setTitle(getArguments().getString(TITLE))
-                .setPositiveButton("ok",
+                .setTitle(dialogTitle)
+                .setPositiveButton("save",
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                //mOnResultListener.onNewValue(colorPicker.getColor());
+                                mOnResultListener.onNewValue(customMarker ? customLatLng : currentLatLng);
                                 dialog.dismiss();
                             }
                         })
@@ -94,6 +98,32 @@ public class LocationDialogFragment extends DialogFragment implements LocationLi
     }
 
     @Override
+    public void onDismiss(DialogInterface dialog) {
+        removeMapFragment();
+        super.onDismiss(dialog);
+    }
+
+    private void removeMapFragment() {
+        if (mapFragment != null) {
+            FragmentManager fm = getFragmentManager();
+            if(fm != null) {
+                FragmentTransaction ft = fm.beginTransaction();
+                ft.remove(mapFragment);
+                ft.commit();
+            }
+        }
+    }
+
+    private void setUpMapIfNeeded() {
+        // Do a null check to confirm that we have not already instantiated the map.
+        if (mMap == null) {
+            // Try to obtain the map from the SupportMapFragment.
+            mapFragment = (SupportMapFragment) getFragmentManager().findFragmentById(R.id.map);
+            mapFragment.getMapAsync(this);
+        }
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
         mGoogleApiClient.connect();
@@ -103,10 +133,6 @@ public class LocationDialogFragment extends DialogFragment implements LocationLi
     public void onStop() {
         // Disconnecting the client invalidates it.
         mGoogleApiClient.disconnect();
-        /*
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        ft.remove(mapFragment);
-        ft.commitAllowingStateLoss();*/
         super.onStop();
     }
 
@@ -116,12 +142,13 @@ public class LocationDialogFragment extends DialogFragment implements LocationLi
         double currentLongitude = location.getLongitude();
 
         LatLng latLng = new LatLng(currentLatitude, currentLongitude);
-
+        currentLatLng = latLng;
         MarkerOptions options = new MarkerOptions()
                 .position(latLng)
-                .title("I am here!");
+                .title(dialogTitle);
 
-        mMap.addMarker(options);
+        marker = mMap.addMarker(options);
+
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 12.0f));
 
         //Only the first one. We don't need to be super accurate.
@@ -157,8 +184,61 @@ public class LocationDialogFragment extends DialogFragment implements LocationLi
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        // Check if we were successful in obtaining the map.
+        if (mMap != null) {
+            mMap.setMyLocationEnabled(true);
+            if(oldLatLng != null){
+                mMap.addMarker(new MarkerOptions()
+                        .position(oldLatLng)
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                        .title("Current"));
+            }
+            /*
+            mMap.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
 
-        mMap.setMyLocationEnabled(true);
+                @Override
+                public void onMyLocationChange(Location location) {
+                    currentLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+                    if(!customMarker) {
+                        if(marker != null)
+                            marker.remove();
+                        marker = mMap.addMarker(new MarkerOptions().position(currentLatLng));
+                    }
+
+                }
+            });*/
+
+            mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+                @Override
+                public void onMapClick(LatLng latLng) {
+                    customLatLng = latLng;
+                    customMarker = true;
+                    if(marker != null)
+                        marker.remove();
+                    marker = mMap.addMarker(new MarkerOptions().position(latLng));
+                    float zoom = mMap.getCameraPosition().zoom;
+                    //keep the current zoom if less than the default
+                    if(zoom <= DEFAULT_ZOOM)
+                        zoom = DEFAULT_ZOOM;
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
+                }
+            });
+
+            mMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
+                @Override
+                public boolean onMyLocationButtonClick() {
+                    if(currentLatLng != null) {
+                        if(marker != null)
+                            marker.remove();
+                        marker = mMap.addMarker(new MarkerOptions().position(currentLatLng));
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, DEFAULT_ZOOM));
+                        customMarker = false;
+                    }
+                    return false;
+                }
+            });
+
+        }
     }
 
     public interface ResultListener {

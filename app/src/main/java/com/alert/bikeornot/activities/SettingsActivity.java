@@ -67,7 +67,10 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
                     public void onClick(final PrefItem item) {
                         LocationDialogFragment locationDialogFragment = new LocationDialogFragment();
                         Bundle bundle = new Bundle();
-                        bundle.putString(LocationDialogFragment.TITLE, item.getTitle());
+                        bundle.putString(LocationDialogFragment.TITLE_ARG, item.getTitle());
+                        LatLng oldLatLng = PrefGpsToLatLng(item);
+                        if(oldLatLng != null)
+                            bundle.putParcelable(LocationDialogFragment.OLD_LATLNG_ARG, oldLatLng);
                         locationDialogFragment.setArguments(bundle);
                         locationDialogFragment.setOnResultListener(new LocationDialogFragment.ResultListener() {
                             @Override
@@ -100,7 +103,7 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
                     public void onClick(final PrefItem item) {
                         LocationDialogFragment locationDialogFragment = new LocationDialogFragment();
                         Bundle bundle = new Bundle();
-                        bundle.putString(LocationDialogFragment.TITLE, item.getTitle());
+                        bundle.putString(LocationDialogFragment.TITLE_ARG, item.getTitle());
                         locationDialogFragment.setArguments(bundle);
                         locationDialogFragment.setOnResultListener(new LocationDialogFragment.ResultListener() {
                             @Override
@@ -126,6 +129,16 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
                 }));
     }
 
+    private LatLng PrefGpsToLatLng(PrefItem item) {
+        String gps = (String) item.getValue();
+        if(gps != item.getDefaultValue()) {
+            String latitude = gps.split(",")[0];
+            String longitude = gps.split(",")[1];
+
+            return new LatLng(Double.valueOf(latitude), Double.valueOf(longitude));
+        }
+        return null;
+    }
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);

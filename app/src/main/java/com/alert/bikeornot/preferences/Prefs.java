@@ -5,8 +5,8 @@ public class Prefs {
     public static final String IS_CONFIGURED = "is_setup";
 
     //The time the notification will be displayed. Must be before Going Time.
-    public static final String NOTIFICATION_HOUR = "notification_hour";
-    public static final String NOTIFICATION_MINUTE = "notification_minute";
+    //HH:MM
+    public static final String NOTIFICATION_TIME = "notification_time";
 
     //When the user is leaving home.
     public static final String START_TIME_HOUR = "start_time_hour";

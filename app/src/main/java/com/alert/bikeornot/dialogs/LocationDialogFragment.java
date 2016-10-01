@@ -57,7 +57,7 @@ public class LocationDialogFragment extends DialogFragment implements LocationLi
     }
 
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
+    public AlertDialog onCreateDialog(Bundle savedInstanceState) {
         View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_location, null, false);
         ButterKnife.bind(this, view);
 
@@ -94,7 +94,17 @@ public class LocationDialogFragment extends DialogFragment implements LocationLi
                         }
                 );
 
-        return builder.create();
+        AlertDialog dialog = builder.create();
+        if(dialogTitle.equals(getString(R.string.work_return_location))) {
+
+            dialog.setButton(DialogInterface.BUTTON_NEUTRAL, "Same as start", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    mOnResultListener.onNewValue(new LatLng(0,0));
+                }
+            });
+        }
+        return dialog;
     }
 
     @Override
@@ -148,6 +158,7 @@ public class LocationDialogFragment extends DialogFragment implements LocationLi
                 .title(dialogTitle);
 
         marker = mMap.addMarker(options);
+        marker.showInfoWindow();
 
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 12.0f));
 
@@ -191,7 +202,8 @@ public class LocationDialogFragment extends DialogFragment implements LocationLi
                 mMap.addMarker(new MarkerOptions()
                         .position(oldLatLng)
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-                        .title("Current"));
+                        .title("Current"))
+                        .showInfoWindow();
             }
             /*
             mMap.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
@@ -215,7 +227,9 @@ public class LocationDialogFragment extends DialogFragment implements LocationLi
                     customMarker = true;
                     if(marker != null)
                         marker.remove();
-                    marker = mMap.addMarker(new MarkerOptions().position(latLng));
+                    marker = mMap.addMarker(new MarkerOptions().position(latLng)
+                                                                .title("New position"));
+                    marker.showInfoWindow();
                     float zoom = mMap.getCameraPosition().zoom;
                     //keep the current zoom if less than the default
                     if(zoom <= DEFAULT_ZOOM)
@@ -231,6 +245,7 @@ public class LocationDialogFragment extends DialogFragment implements LocationLi
                         if(marker != null)
                             marker.remove();
                         marker = mMap.addMarker(new MarkerOptions().position(currentLatLng));
+                        marker.showInfoWindow();
                         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, DEFAULT_ZOOM));
                         customMarker = false;
                     }

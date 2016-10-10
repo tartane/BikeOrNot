@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.bikeornot.MainActivity"
+    tools:deviceIds="wear_round">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true">
+        <ImageView
+            android:id="@+id/imgBikeStatus"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:src="@drawable/ic_bicycle_white"
+            android:layout_centerHorizontal="true"
+            android:scaleType="fitXY" />
+
+        <TextView
+            android:id="@+id/lblStatusTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:layout_below="@id/imgBikeStatus"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="-15dp"
+            android:textSize="20sp"
+            tools:text="Bike Today!"/>
+
+        <TextView
+            android:id="@+id/lblStatusText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:layout_below="@id/lblStatusTitle"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="7dp"
+            android:textSize="12sp"
+            tools:text="Weather looks nice today. Get on your bike!"/>
+    </RelativeLayout>
+
+
+</RelativeLayout>

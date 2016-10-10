@@ -1,6 +1,6 @@
 # Add project specific ProGuard rules here.
 # By default, the flags in this file are appended to flags specified
-# in C:\Users\marcandre.therrien\AppData\Local\Android\sdk/tools/proguard/proguard-android.txt
+# in C:\android-sdk\sdk/tools/proguard/proguard-android.txt
 # You can edit the include path and order by changing the proguardFiles
 # directive in build.gradle.
 #
@@ -15,3 +15,6 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+-keep class * implements android.os.Parcelable {
+    public static final android.os.Parcelable$Creator *;
+}

@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,6 +27,13 @@ import com.alert.bikeornot.preferences.Prefs;
 import com.alert.bikeornot.utilities.FileUtils;
 import com.alert.bikeornot.utilities.PrefUtils;
 import com.alert.bikeornot.utilities.TimeUtils;
+import com.mobvoi.android.common.ConnectionResult;
+import com.mobvoi.android.common.api.MobvoiApiClient;
+import com.mobvoi.android.common.api.ResultCallback;
+import com.mobvoi.android.wearable.DataApi;
+import com.mobvoi.android.wearable.PutDataMapRequest;
+import com.mobvoi.android.wearable.PutDataRequest;
+import com.mobvoi.android.wearable.Wearable;
 
 import java.util.ArrayList;
 
@@ -35,7 +43,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, MobvoiApiClient.ConnectionCallbacks, MobvoiApiClient.OnConnectionFailedListener {
 
     @Bind(R.id.layBikeStatus)
     RelativeLayout layBikeStatus;
@@ -64,10 +72,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Bind(R.id.lblUpdated)
     TextView lblUpdated;
 
+    private final String TAG = "MainActivity";
+
     private LinearLayoutManager mLayoutManager;
     private DailyForecastAdapter mAdapter;
 
     private Forecast forecast;
+    private MobvoiApiClient mMobvoiApiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +89,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             startActivity(new Intent(MainActivity.this, SettingsActivity.class));
             finish();*/
         }
+
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
@@ -94,8 +106,44 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if(forecast != null) {
             UpdateViews(forecast);
         }
+
+        mMobvoiApiClient = new MobvoiApiClient.Builder(this)
+                .addApi(Wearable.API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
+
+        mMobvoiApiClient.connect();
+
     }
 
+    private void SendUpdateToWear(Forecast forecast) {
+        if(forecast != null) {
+            final BikeOrNotResponse response = BikeManager.BikeOrNotHourly(BikeManager.GetTodayDatapoints(forecast));
+            PutDataMapRequest putDataMapRequest = PutDataMapRequest.create("/bike");
+
+            putDataMapRequest.getDataMap().putString("title", response.getTitle());
+            putDataMapRequest.getDataMap().putString("text", response.getText());
+            putDataMapRequest.getDataMap().putInt("color", response.getColor());
+            putDataMapRequest.getDataMap().putInt("darkColor", response.getDarkColor());
+            putDataMapRequest.getDataMap().putString("status", response.getStatus().toString());
+            PutDataRequest request = putDataMapRequest.asPutDataRequest();
+
+            if (!mMobvoiApiClient.isConnected()) {
+                return;
+            }
+            Wearable.DataApi.putDataItem(mMobvoiApiClient, request)
+                    .setResultCallback(new ResultCallback<DataApi.DataItemResult>() {
+                        @Override
+                        public void onResult(DataApi.DataItemResult dataItemResult) {
+                            if (!dataItemResult.getStatus().isSuccess()) {
+                                Log.e(TAG, "ERROR: failed to putDataItem, status code: "
+                                        + dataItemResult.getStatus().getStatusCode());
+                            }
+                        }
+                    });
+        }
+    }
     private void UpdateViews(Forecast forecast) {
         final BikeOrNotResponse response = BikeManager.BikeOrNotHourly(BikeManager.GetTodayDatapoints(forecast));
 
@@ -204,5 +252,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch(view.getId()) {
 
         }
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        SendUpdateToWear(forecast);
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+
     }
 }

@@ -157,7 +157,7 @@ public class BikeManager {
         for(DataPoint dataPoint: forecast.getDaily().getDataPoints()) {
             forecastCal.setTime(dataPoint.getTime());
 
-            if(forecastCal.after(todayCal)) {
+            if(forecastCal.get(Calendar.DAY_OF_MONTH) > todayCal.get(Calendar.DAY_OF_MONTH)) {
                 weeklyDatapoints.add(dataPoint);
             }
         }

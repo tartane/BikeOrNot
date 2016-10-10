@@ -9,4 +9,5 @@
     <string name="start_location">Start location</string>
     <string name="home_start_location">Home/start location</string>
     <string name="work_return_location">Work/return location</string>
+    <string name="notification_time">Notification time</string>
 </resources>

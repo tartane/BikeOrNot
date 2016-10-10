@@ -78,7 +78,7 @@ public class TimePickerDialogFragment extends DialogFragment {
         return builder.create();
     }
 
-    public void setOnResultListener(TimePickerDialogFragment.ResultListener resultListener) {
+    public void setOnResultListener(ResultListener resultListener) {
         mOnResultListener = resultListener;
     }
 

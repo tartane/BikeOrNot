@@ -14,24 +14,26 @@ public class PrefItem {
     private Object mDefaultValue;
     private OnClickListener mOnClickListener;
     private SubTitleGenerator mSubTitleGenerator;
+    private boolean mRequired;
 
-    public PrefItem(Context context, int iconRes, int titleRes, String prefKey, Object defaultValue, OnClickListener clickListener, SubTitleGenerator subTitleGenerator) {
-        this(context, iconRes, titleRes, prefKey, defaultValue);
+    public PrefItem(Context context, int iconRes, int titleRes, String prefKey, Object defaultValue, boolean required, OnClickListener clickListener, SubTitleGenerator subTitleGenerator) {
+        this(context, iconRes, titleRes, prefKey, defaultValue, required);
         mOnClickListener = clickListener;
         mSubTitleGenerator = subTitleGenerator;
     }
 
-    public PrefItem(Context context, int iconRes, int titleRes, String prefKey, Object defaultValue, SubTitleGenerator subTitleGenerator) {
-        this(context, iconRes, titleRes, prefKey, defaultValue);
+    public PrefItem(Context context, int iconRes, int titleRes, String prefKey, Object defaultValue, boolean required, SubTitleGenerator subTitleGenerator) {
+        this(context, iconRes, titleRes, prefKey, defaultValue, required);
         mSubTitleGenerator = subTitleGenerator;
     }
 
-    public PrefItem(Context context, int iconRes, int titleRes, String prefKey, Object defaultValue) {
+    public PrefItem(Context context, int iconRes, int titleRes, String prefKey, Object defaultValue, boolean required) {
         mContext = context;
         mIconRes = iconRes;
         mTitleRes = titleRes;
         mPrefKey = prefKey;
         mDefaultValue = defaultValue;
+        mRequired = required;
     }
 
     public Object getValue() {
@@ -56,6 +58,14 @@ public class PrefItem {
         } else {
             PrefUtils.save(mContext, mPrefKey, value.toString());
         }
+    }
+
+    public boolean isRequired() {
+        return mRequired;
+    }
+
+    public void setRequired(boolean mRequired) {
+        this.mRequired = mRequired;
     }
 
     public void clearValue() {

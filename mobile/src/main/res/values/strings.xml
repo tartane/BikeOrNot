@@ -10,4 +10,5 @@
     <string name="home_start_location">Home/start location</string>
     <string name="work_return_location">Work/return location</string>
     <string name="notification_time">Notification time</string>
+    <string name="first_time_setup">First time setup</string>
 </resources>

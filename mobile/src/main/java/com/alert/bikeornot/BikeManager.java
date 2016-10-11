@@ -1,7 +1,9 @@
 package com.alert.bikeornot;
 
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
 import android.zetterstrom.com.forecast.ForecastClient;
 import android.zetterstrom.com.forecast.ForecastConfiguration;
@@ -9,6 +11,7 @@ import android.zetterstrom.com.forecast.models.DataPoint;
 import android.zetterstrom.com.forecast.models.Forecast;
 import android.zetterstrom.com.forecast.models.Unit;
 
+import com.alert.bikeornot.activities.MainActivity;
 import com.alert.bikeornot.enums.EBikeOrNot;
 import com.alert.bikeornot.models.BikeOrNotResponse;
 import com.alert.bikeornot.preferences.Prefs;
@@ -173,7 +176,8 @@ public class BikeManager {
                             .setColor(bikeResponse.getColor())
                             .setSmallIcon(bicycleDrawable)
                             .setContentTitle(bikeResponse.getTitle())
-                            .setContentText(bikeResponse.getText());
+                            .setContentText(bikeResponse.getText())
+                            .setContentIntent(PendingIntent.getActivity(App.getContext(), 0, new Intent(App.getContext(), MainActivity.class), 0));
 
         NotificationManager notificationManager =
                 (NotificationManager) App.getContext().getSystemService(App.getContext().NOTIFICATION_SERVICE);

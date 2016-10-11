@@ -85,9 +85,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         boolean isConfigured = PrefUtils.get(this, Prefs.IS_CONFIGURED, false);
         if(!isConfigured) {
-            /*
-            startActivity(new Intent(MainActivity.this, SettingsActivity.class));
-            finish();*/
+            Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+            intent.putExtra(SettingsActivity.MODE_FIRST_TIME, "first");
+            startActivity(intent);
+            finish();
         }
 
         setContentView(R.layout.activity_main);

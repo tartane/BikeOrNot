@@ -46,7 +46,7 @@ public class SettingsListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             PrefItem item = (PrefItem) mItems.get(position);
             itemViewHolder.itemView.setClickable(item.isClickable());
             itemViewHolder.icon.setImageResource(item.getIconResource());
-            itemViewHolder.text1.setText(item.getTitle());
+            itemViewHolder.text1.setText(item.getTitle() + (item.isRequired() ? "*" : ""));
             itemViewHolder.text2.setText(item.getSubTitle());
 
             if (item.getDefaultValue() instanceof Boolean) {

@@ -33,7 +33,7 @@ public class TimePickerDialogFragment extends DialogFragment {
         dialogTitle = getArguments().getString(TITLE_ARG);
         currentSetTime = getArguments().getString(CURRENT_SET_TIME_ARG);
 
-        if(!currentSetTime.equals("")) {
+        if(currentSetTime != null && !currentSetTime.equals("") && !currentSetTime.equals("-1")) {
             if (Build.VERSION.SDK_INT >= 23 ) {
                 timePicker.setHour(Integer.valueOf(currentSetTime.split(":")[0]));
                 timePicker.setMinute(Integer.valueOf(currentSetTime.split(":")[1]));
@@ -67,6 +67,13 @@ public class TimePickerDialogFragment extends DialogFragment {
                                 dialog.dismiss();
                             }
                         })
+                .setNeutralButton("Disable notification", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        String time = "-1";
+                        mOnResultListener.onNewValue(time);
+                    }
+                })
                 .setNegativeButton("cancel",
                         new DialogInterface.OnClickListener() {
                             @Override

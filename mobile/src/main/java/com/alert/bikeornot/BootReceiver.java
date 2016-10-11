@@ -49,8 +49,8 @@ public class BootReceiver extends BroadcastReceiver {
     }
 
     public static void scheduleAlarms(Context context, boolean nextDay) {
-        String time = PrefUtils.get(context, Prefs.NOTIFICATION_TIME, "");
-        if(!time.equals("")) {
+        String time = PrefUtils.get(context, Prefs.NOTIFICATION_TIME, "-1");
+        if(!time.equals("-1")) {
 
             AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
             Intent serviceIntent = new Intent(context, BikeService.class);

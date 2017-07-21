@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,49 +26,42 @@ import com.alert.bikeornot.preferences.Prefs;
 import com.alert.bikeornot.utilities.FileUtils;
 import com.alert.bikeornot.utilities.PrefUtils;
 import com.alert.bikeornot.utilities.TimeUtils;
-import com.mobvoi.android.common.ConnectionResult;
-import com.mobvoi.android.common.api.MobvoiApiClient;
-import com.mobvoi.android.common.api.ResultCallback;
-import com.mobvoi.android.wearable.DataApi;
-import com.mobvoi.android.wearable.PutDataMapRequest;
-import com.mobvoi.android.wearable.PutDataRequest;
-import com.mobvoi.android.wearable.Wearable;
 
 import java.util.ArrayList;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, MobvoiApiClient.ConnectionCallbacks, MobvoiApiClient.OnConnectionFailedListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    @Bind(R.id.layBikeStatus)
+    @BindView(R.id.layBikeStatus)
     RelativeLayout layBikeStatus;
 
-    @Bind(R.id.layAppBar)
+    @BindView(R.id.layAppBar)
     AppBarLayout layAppBar;
 
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
 
-    @Bind(R.id.layCollapsingToolbar)
+    @BindView(R.id.layCollapsingToolbar)
     CollapsingToolbarLayout layCollapsingToolbar;
 
-    @Bind(R.id.recyclerView)
+    @BindView(R.id.recyclerView)
     RecyclerView mRecyclerView;
 
-    @Bind(R.id.viewOverlay)
+    @BindView(R.id.viewOverlay)
     View viewOverlay;
 
-    @Bind(R.id.lblStatusTitle)
+    @BindView(R.id.lblStatusTitle)
     TextView lblStatusTitle;
 
-    @Bind(R.id.lblStatusText)
+    @BindView(R.id.lblStatusText)
     TextView lblStatusText;
 
-    @Bind(R.id.lblUpdated)
+    @BindView(R.id.lblUpdated)
     TextView lblUpdated;
 
     private final String TAG = "MainActivity";
@@ -78,7 +70,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private DailyForecastAdapter mAdapter;
 
     private Forecast forecast;
-    private MobvoiApiClient mMobvoiApiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,62 +80,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             intent.putExtra(SettingsActivity.MODE_FIRST_TIME, "first");
             startActivity(intent);
             finish();
-        }
+        } else {
 
-        setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
-        setSupportActionBar(toolbar);
+            setContentView(R.layout.activity_main);
+            ButterKnife.bind(this);
+            setSupportActionBar(toolbar);
 
-        mLayoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(mLayoutManager);
+            mLayoutManager = new LinearLayoutManager(this);
+            mRecyclerView.setLayoutManager(mLayoutManager);
 
-        layBikeStatus.setPadding(0, 0, 0, getStatusBarHeight());
+            layBikeStatus.setPadding(0, 0, 0, getStatusBarHeight());
 
-        forecast = FileUtils.readObjectFromFile(this);
+            forecast = FileUtils.readObjectFromFile(this);
 
-        layCollapsingToolbar.setTitle(" ");
+            layCollapsingToolbar.setTitle(" ");
 
-        if(forecast != null) {
-            UpdateViews(forecast);
-        }
-
-        mMobvoiApiClient = new MobvoiApiClient.Builder(this)
-                .addApi(Wearable.API)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .build();
-
-        mMobvoiApiClient.connect();
-
-    }
-
-    private void SendUpdateToWear(Forecast forecast) {
-        if(forecast != null) {
-            final BikeOrNotResponse response = BikeManager.BikeOrNotHourly(BikeManager.GetTodayDatapoints(forecast));
-            PutDataMapRequest putDataMapRequest = PutDataMapRequest.create("/bike");
-
-            putDataMapRequest.getDataMap().putString("title", response.getTitle());
-            putDataMapRequest.getDataMap().putString("text", response.getText());
-            putDataMapRequest.getDataMap().putInt("color", response.getColor());
-            putDataMapRequest.getDataMap().putInt("darkColor", response.getDarkColor());
-            putDataMapRequest.getDataMap().putString("status", response.getStatus().toString());
-            PutDataRequest request = putDataMapRequest.asPutDataRequest();
-
-            if (!mMobvoiApiClient.isConnected()) {
-                return;
+            if (forecast != null) {
+                UpdateViews(forecast);
             }
-            Wearable.DataApi.putDataItem(mMobvoiApiClient, request)
-                    .setResultCallback(new ResultCallback<DataApi.DataItemResult>() {
-                        @Override
-                        public void onResult(DataApi.DataItemResult dataItemResult) {
-                            if (!dataItemResult.getStatus().isSuccess()) {
-                                Log.e(TAG, "ERROR: failed to putDataItem, status code: "
-                                        + dataItemResult.getStatus().getStatusCode());
-                            }
-                        }
-                    });
         }
+
     }
+
     private void UpdateViews(Forecast forecast) {
         final BikeOrNotResponse response = BikeManager.BikeOrNotHourly(BikeManager.GetTodayDatapoints(forecast));
 
@@ -255,18 +212,4 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    @Override
-    public void onConnected(Bundle bundle) {
-        SendUpdateToWear(forecast);
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-
-    }
 }

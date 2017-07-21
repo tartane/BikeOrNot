@@ -1,6 +1,6 @@
 <resources>
-    <string translatable="false" name="app_name">BikeOrNot</string>
-    <string translatable="false" name="api_key">e71fecf697c3e2e35d2a06f38b177f23</string>
+    <string name="app_name" translatable="false">BikeOrNot</string>
+    <string name="api_key" translatable="false">AIzaSyB7xQP813WF12HtWpJ4oE4uie7o1FFDN0k</string>
     <string name="refresh">Refresh</string>
     <string name="unknown_error_refresh">An unknown error occurred while refreshing the forecast.</string>
     <string name="updated">Updated</string>
@@ -11,4 +11,6 @@
     <string name="work_return_location">Work/return location</string>
     <string name="notification_time">Notification time</string>
     <string name="first_time_setup">First time setup</string>
+    <string name="error">Error</string>
+    <string name="ok">ok</string>
 </resources>

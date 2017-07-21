@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class DailyForecastAdapter extends RecyclerView.Adapter {
@@ -101,16 +101,16 @@ public class DailyForecastAdapter extends RecyclerView.Adapter {
 
     public class ForeCastViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        @Bind(R.id.imgBikeStatus)
+        @BindView(R.id.imgBikeStatus)
         ImageView imgBikeStatus;
 
-        @Bind(R.id.lblDate)
+        @BindView(R.id.lblDate)
         TextView lblDate;
 
-        @Bind(R.id.lblStatusText)
+        @BindView(R.id.lblStatusText)
         TextView lblStatusText;
 
-        @Bind(R.id.lblTemperature)
+        @BindView(R.id.lblTemperature)
         TextView lblTemperature;
 
         public ForeCastViewHolder(View itemView) {

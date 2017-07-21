@@ -257,6 +257,6 @@ public class LocationDialogFragment extends DialogFragment implements LocationLi
     }
 
     public interface ResultListener {
-        public void onNewValue(LatLng gps);
+        void onNewValue(LatLng gps);
     }
 }

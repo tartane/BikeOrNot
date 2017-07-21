@@ -30,7 +30,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -43,13 +43,13 @@ public class SettingsActivity extends AppCompatActivity implements SharedPrefere
     private final String DIALOG_HOME_LOCATION = "dialog_home_location";
     private final String DIALOG_WORK_LOCATION = "dialog_work_location";
     private final String DIALOG_TIME_PICKER = "dialog_time_picker";
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
 
-    @Bind(R.id.recyclerView)
+    @BindView(R.id.recyclerView)
     RecyclerView mRecyclerView;
 
-    @Bind(R.id.btnSave)
+    @BindView(R.id.btnSave)
     Button btnSave;
 
     @Override

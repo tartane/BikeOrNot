@@ -11,12 +11,13 @@
 
     <Button
         android:id="@+id/btnSave"
-        android:layout_width="wrap_content"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:textColor="#ffffff"
-        android:background="@color/greenPrimary"
+        android:background="@drawable/round_primary_button"
         android:text="Save"
         android:layout_margin="10dp"
+        android:padding="15dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"/>
 

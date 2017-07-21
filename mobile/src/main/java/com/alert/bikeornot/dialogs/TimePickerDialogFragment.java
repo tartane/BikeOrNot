@@ -12,7 +12,7 @@ import android.widget.TimePicker;
 
 import com.alert.bikeornot.R;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class TimePickerDialogFragment extends DialogFragment {
@@ -21,7 +21,8 @@ public class TimePickerDialogFragment extends DialogFragment {
     public static final String TITLE_ARG = "title";
     public static final String CURRENT_SET_TIME_ARG = "current_set_time";
     private String currentSetTime;
-    @Bind(R.id.timePicker)
+
+    @BindView(R.id.timePicker)
     TimePicker timePicker;
 
     @NonNull

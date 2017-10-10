@@ -1,15 +1,20 @@
 package com.alert.bikeornot.activities;
 
-import android.support.v7.app.AppCompatActivity;
+import android.net.Uri;
 import android.os.Bundle;
-
 import com.alert.bikeornot.R;
+import com.alert.bikeornot.fragments.SetupNotificationTimeFragment;
 
-public class SetupActivity extends AppCompatActivity {
+public class SetupActivity extends BaseActivity implements SetupNotificationTimeFragment.OnFragmentInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_setup);
+        super.onCreate(savedInstanceState, R.layout.activity_setup, false);
+
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
 }

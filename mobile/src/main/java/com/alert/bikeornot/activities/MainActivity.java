@@ -30,12 +30,11 @@ import com.alert.bikeornot.utilities.TimeUtils;
 import java.util.ArrayList;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     @BindView(R.id.layBikeStatus)
     RelativeLayout layBikeStatus;
@@ -73,37 +72,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        boolean isConfigured = PrefUtils.get(this, Prefs.IS_CONFIGURED, false);
-        if(!isConfigured) {
-            Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
-            intent.putExtra(SettingsActivity.MODE_FIRST_TIME, "first");
-            startActivity(intent);
-            finish();
-        } else {
+        super.onCreate(savedInstanceState, R.layout.activity_main, false);
 
-            setContentView(R.layout.activity_main);
-            ButterKnife.bind(this);
-            setSupportActionBar(toolbar);
+        layBikeStatus.setPadding(0, 0, 0, getStatusBarHeight());
+        layCollapsingToolbar.setTitle(" ");
 
-            mLayoutManager = new LinearLayoutManager(this);
-            mRecyclerView.setLayoutManager(mLayoutManager);
+        GetForecast();
+    }
 
-            layBikeStatus.setPadding(0, 0, 0, getStatusBarHeight());
-
-            forecast = FileUtils.readObjectFromFile(this);
-
-            layCollapsingToolbar.setTitle(" ");
-
-            if (forecast != null) {
-                UpdateViews(forecast);
-            }
+    private void GetForecast() {
+        forecast = FileUtils.readObjectFromFile(this);
+        if (forecast != null) {
+            UpdateViews(forecast);
         }
-
     }
 
     private void UpdateViews(Forecast forecast) {
+
         final BikeOrNotResponse response = BikeManager.BikeOrNotHourly(BikeManager.GetTodayDatapoints(forecast));
+
+        mLayoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(mLayoutManager);
 
         if(mAdapter == null) {
             ArrayList<DataPoint> weeklyDatapoints =  BikeManager.GetWeeklyDatapoints(forecast);

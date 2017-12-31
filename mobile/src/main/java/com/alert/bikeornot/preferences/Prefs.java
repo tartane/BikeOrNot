@@ -15,6 +15,9 @@ public class Prefs {
     //User home location
     public static final String START_LOCATION = "start_location";
 
+    public static final String LOCATION_LATITUDE = "location_latitude";
+    public static final String LOCATION_LONGITUDE = "location_longitude";
+
     //When user is leaving work
     public static final String RETURN_TIME_HOUR = "return_time_hour";
     public static final String RETURN_TIME_MINUTE = "return_time_minute";

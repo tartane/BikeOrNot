@@ -160,7 +160,7 @@ public class BikeManager {
         for(DataPoint dataPoint: forecast.getDaily().getDataPoints()) {
             forecastCal.setTime(dataPoint.getTime());
 
-            if(forecastCal.get(Calendar.DAY_OF_MONTH) > todayCal.get(Calendar.DAY_OF_MONTH)) {
+            if(forecastCal.after(todayCal)) {
                 weeklyDatapoints.add(dataPoint);
             }
         }
@@ -193,9 +193,9 @@ public class BikeManager {
         ForecastClient.create(configuration);
 
         //If the user decide a different location for the going/return, i'll need to do 2 request
-        String gps = PrefUtils.get(context, Prefs.START_LOCATION, "0,0");
-        double startLatitude = Double.valueOf(gps.split(",")[0]);
-        double startLongitude = Double.valueOf(gps.split(",")[1]);
+
+        double startLatitude =  PrefUtils.get(context, Prefs.LOCATION_LATITUDE, 0);
+        double startLongitude = PrefUtils.get(context, Prefs.LOCATION_LONGITUDE, 0);
 
         ForecastClient.getInstance()
                 .getForecast(startLatitude, startLongitude, new Callback<Forecast>() {

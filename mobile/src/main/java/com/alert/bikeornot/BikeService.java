@@ -29,9 +29,6 @@ public class BikeService extends IntentService {
             @Override
             public void onResponse(Call<Forecast> call, Response<Forecast> response) {
                 Forecast forecast = response.body();
-
-
-
                 BikeOrNotResponse bikeResponse = BikeManager.BikeOrNotHourly(BikeManager.GetTodayDatapoints(forecast));
                 BikeManager.ShowNotification(bikeResponse);
 
